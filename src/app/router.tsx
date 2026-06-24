@@ -4,7 +4,9 @@ import { DemoPage } from "@/features/demo/demo-page";
 import { ConstitutionDetailPage } from "@/features/constitutions/constitution-detail";
 import { ConstitutionFormPage } from "@/features/constitutions/constitution-form";
 import { ConstitutionListPage } from "@/features/constitutions/constitution-list";
-import { ModulePlaceholder } from "@/features/placeholders/module-placeholder";
+import { ConstraintDetailPage } from "@/features/constraints/constraint-detail";
+import { ConstraintFormPage } from "@/features/constraints/constraint-form";
+import { ConstraintListPage } from "@/features/constraints/constraint-list";
 import { PlannedPage } from "@/features/placeholders/planned-page";
 
 import { AppShell } from "./app-shell";
@@ -25,9 +27,15 @@ export function AppRoutes() {
           element={<ConstitutionDetailPage />}
           path="/constitutions/:id"
         />
+        <Route element={<ConstraintListPage />} path="/constraints" />
+        <Route element={<ConstraintFormPage />} path="/constraints/new" />
         <Route
-          element={<ModulePlaceholder title="Constraint Library" />}
-          path="/constraints/*"
+          element={<ConstraintFormPage />}
+          path="/constraints/:id/edit"
+        />
+        <Route
+          element={<ConstraintDetailPage />}
+          path="/constraints/:id"
         />
         <Route
           element={<PlannedPage title="Decision Projects" />}

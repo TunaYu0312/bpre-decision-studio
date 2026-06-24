@@ -15,7 +15,6 @@ export function AppShell() {
       </a>
       <aside
         className={`app-sidebar ${menuOpen ? "app-sidebar--open" : ""}`}
-        aria-label="Primary navigation"
       >
         <div className="border-b border-white/10 px-5 py-6">
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-300 text-slate-950">
@@ -29,7 +28,10 @@ export function AppShell() {
           </p>
         </div>
 
-        <nav className="flex-1 space-y-1 p-3">
+        <nav
+          aria-label="Primary navigation"
+          className="flex-1 space-y-1 p-3"
+        >
           {navigationItems.map((item) => {
             const Icon = item.icon;
             return (

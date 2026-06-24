@@ -1,9 +1,33 @@
 import { ArrowRight, BookOpenCheck, LibraryBig } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { copy } from "@/app/copy";
+import { useRepository } from "@/data/repository-context";
 
 export function DemoPage() {
+  const repository = useRepository();
+  const [counts, setCounts] = useState({ constitutions: 0, constraints: 0 });
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      repository.listConstitutions(),
+      repository.listConstraints(),
+    ]).then(([constitutions, constraints]) => {
+      if (!active) return;
+      setCounts({
+        constitutions: constitutions.filter((item) => item.status === "Active")
+          .length,
+        constraints: constraints.filter((item) => item.status === "Active")
+          .length,
+      });
+    });
+    return () => {
+      active = false;
+    };
+  }, [repository]);
+
   return (
     <div className="mx-auto max-w-7xl">
       <section className="hero-panel">
@@ -23,6 +47,11 @@ export function DemoPage() {
             <Link className="button button--secondary" to="/constraints">
               Explore constraints
             </Link>
+          </div>
+          <div className="mt-10 flex flex-wrap gap-6 text-sm text-slate-400">
+            <span>{counts.constitutions} active Constitution</span>
+            <span>{counts.constraints} active constraints</span>
+            <span>4 BPR&E pillars</span>
           </div>
         </div>
       </section>

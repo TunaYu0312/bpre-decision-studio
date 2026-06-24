@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from "react-router";
 
 import { DemoPage } from "@/features/demo/demo-page";
+import { ConstitutionDetailPage } from "@/features/constitutions/constitution-detail";
+import { ConstitutionFormPage } from "@/features/constitutions/constitution-form";
+import { ConstitutionListPage } from "@/features/constitutions/constitution-list";
 import { ModulePlaceholder } from "@/features/placeholders/module-placeholder";
 import { PlannedPage } from "@/features/placeholders/planned-page";
 
@@ -12,9 +15,15 @@ export function AppRoutes() {
       <Route element={<AppShell />}>
         <Route element={<Navigate replace to="/demo" />} index />
         <Route element={<DemoPage />} path="/demo" />
+        <Route element={<ConstitutionListPage />} path="/constitutions" />
+        <Route element={<ConstitutionFormPage />} path="/constitutions/new" />
         <Route
-          element={<ModulePlaceholder title="Decision Constitutions" />}
-          path="/constitutions/*"
+          element={<ConstitutionFormPage />}
+          path="/constitutions/:id/edit"
+        />
+        <Route
+          element={<ConstitutionDetailPage />}
+          path="/constitutions/:id"
         />
         <Route
           element={<ModulePlaceholder title="Constraint Library" />}

@@ -90,6 +90,21 @@ describe("ConstraintService", () => {
     });
   });
 
+  it("retires the superseded Constraint when a cloned version is activated", async () => {
+    const { repository, service } = setup();
+    await loadSeedData(repository);
+    const source = seedConstraints[0];
+    const cloned = await service.clone(source.id, "Update the threshold");
+
+    await service.transition(cloned.id, "Active");
+    const records = await service.list();
+
+    expect(records.find((item) => item.id === cloned.id)?.status).toBe("Active");
+    expect(records.find((item) => item.id === source.id)?.status).toBe(
+      "Retired",
+    );
+  });
+
   it("activates, suspends, reactivates, and retires through valid transitions", async () => {
     const { service } = setup();
     const draft = await service.createDraft({

@@ -3,6 +3,13 @@ import Dexie, { type EntityTable } from "dexie";
 import type { ConstitutionRule } from "@/domain/constitution-rule";
 import type { Constitution } from "@/domain/constitution";
 import type { Constraint } from "@/domain/constraint";
+import type { ConstraintStatus } from "@/domain/constraint";
+import {
+  activateConstitution,
+  activateConstraintVersion,
+  DomainError,
+  transitionConstraint,
+} from "@/domain/lifecycle";
 
 import type { SeedWorkspace, WorkspaceRepository } from "./repository";
 
@@ -62,6 +69,24 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
     );
   }
 
+  async activateConstitutionVersion(
+    id: string,
+    now: string,
+  ): Promise<Constitution> {
+    return this.database.transaction(
+      "rw",
+      this.database.constitutions,
+      async () => {
+        const records = await this.database.constitutions.toArray();
+        const updated = activateConstitution(records, id, now);
+        await this.database.constitutions.bulkPut(updated);
+        const activated = updated.find((record) => record.id === id);
+        if (!activated) throw new DomainError("Constitution not found.");
+        return activated;
+      },
+    );
+  }
+
   listConstitutionRules(): Promise<ConstitutionRule[]> {
     return this.database.constitutionRules.toArray();
   }
@@ -93,6 +118,30 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
   async putConstraints(records: Constraint[]): Promise<void> {
     await this.database.transaction("rw", this.database.constraints, async () => {
       await this.database.constraints.bulkPut(records);
+    });
+  }
+
+  async transitionConstraintVersion(
+    id: string,
+    nextStatus: ConstraintStatus,
+    now: string,
+  ): Promise<Constraint> {
+    return this.database.transaction("rw", this.database.constraints, async () => {
+      const current = await this.database.constraints.get(id);
+      if (!current) throw new DomainError("Constraint not found.");
+
+      if (nextStatus !== "Active") {
+        const updated = transitionConstraint(current, nextStatus, now);
+        await this.database.constraints.put(updated);
+        return updated;
+      }
+
+      const records = await this.database.constraints.toArray();
+      const updated = activateConstraintVersion(records, id, now);
+      await this.database.constraints.bulkPut(updated);
+      const activated = updated.find((record) => record.id === id);
+      if (!activated) throw new DomainError("Constraint not found.");
+      return activated;
     });
   }
 

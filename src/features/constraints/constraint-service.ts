@@ -8,7 +8,6 @@ import {
   assertConstraintEditable,
   cloneConstraint,
   DomainError,
-  transitionConstraint,
 } from "@/domain/lifecycle";
 
 export interface ConstraintFilters {
@@ -127,14 +126,10 @@ export class ConstraintService {
     id: string,
     nextStatus: ConstraintStatus,
   ): Promise<Constraint> {
-    const current = await this.repository.getConstraint(id);
-    if (!current) throw new DomainError("Constraint not found.");
-    const updated = transitionConstraint(
-      current,
+    return this.repository.transitionConstraintVersion(
+      id,
       nextStatus,
       this.dependencies.now(),
     );
-    await this.repository.putConstraint(updated);
-    return updated;
   }
 }

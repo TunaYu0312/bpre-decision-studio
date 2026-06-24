@@ -1,6 +1,7 @@
 import type { ConstitutionRule } from "@/domain/constitution-rule";
 import type { Constitution } from "@/domain/constitution";
 import type { Constraint } from "@/domain/constraint";
+import type { ConstraintStatus } from "@/domain/constraint";
 
 export interface SeedWorkspace {
   constitutions: Constitution[];
@@ -13,6 +14,7 @@ export interface WorkspaceRepository {
   getConstitution(id: string): Promise<Constitution | undefined>;
   putConstitution(record: Constitution): Promise<void>;
   putConstitutions(records: Constitution[]): Promise<void>;
+  activateConstitutionVersion(id: string, now: string): Promise<Constitution>;
 
   listConstitutionRules(): Promise<ConstitutionRule[]>;
   listConstitutionRulesFor(
@@ -23,6 +25,11 @@ export interface WorkspaceRepository {
   getConstraint(id: string): Promise<Constraint | undefined>;
   putConstraint(record: Constraint): Promise<void>;
   putConstraints(records: Constraint[]): Promise<void>;
+  transitionConstraintVersion(
+    id: string,
+    nextStatus: ConstraintStatus,
+    now: string,
+  ): Promise<Constraint>;
 
   seedWorkspaceIfNeeded(
     seedVersion: number,

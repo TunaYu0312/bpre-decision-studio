@@ -4,7 +4,6 @@ import {
   type Constitution,
 } from "@/domain/constitution";
 import {
-  activateConstitution,
   assertConstitutionEditable,
   cloneConstitution,
   DomainError,
@@ -94,18 +93,10 @@ export class ConstitutionService {
   }
 
   async activate(id: string): Promise<Constitution> {
-    const records = await this.repository.listConstitutions();
-    const updated = activateConstitution(
-      records,
+    return this.repository.activateConstitutionVersion(
       id,
       this.dependencies.now(),
     );
-    await this.repository.putConstitutions(updated);
-    const activated = updated.find((record) => record.id === id);
-    if (!activated) {
-      throw new DomainError("Constitution not found after activation.");
-    }
-    return activated;
   }
 
   async invalidate(

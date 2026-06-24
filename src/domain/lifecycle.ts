@@ -168,3 +168,24 @@ export function cloneConstraint(
     updatedAt: input.now,
   });
 }
+
+export function activateConstraintVersion(
+  records: Constraint[],
+  targetId: string,
+  now: string,
+): Constraint[] {
+  const target = records.find((record) => record.id === targetId);
+  if (!target) throw new DomainError("Constraint not found.");
+  const activated = transitionConstraint(target, "Active", now);
+
+  return records.map((record) => {
+    if (record.id === targetId) return activated;
+    if (
+      target.supersedesId === record.id &&
+      (record.status === "Active" || record.status === "Suspended")
+    ) {
+      return transitionConstraint(record, "Retired", now);
+    }
+    return record;
+  });
+}

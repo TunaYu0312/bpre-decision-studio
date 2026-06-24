@@ -102,37 +102,44 @@ export function ConstraintListPage() {
             onChange={(event) => updateFilter("search", event.target.value)}
             placeholder="ID, name, or metric key"
             type="search"
+            value={filters.search ?? ""}
           />
         </label>
         <FilterSelect
           label="Pillar"
           onChange={(value) => updateFilter("pillar", value)}
           options={bprePillars}
+          value={filters.pillar}
         />
         <FilterSelect
           label="Status"
           onChange={(value) => updateFilter("status", value)}
           options={constraintStatuses}
+          value={filters.status}
         />
         <FilterSelect
           label="Decision type"
           onChange={(value) => updateFilter("decisionType", value)}
           options={decisionTypes}
+          value={filters.decisionType}
         />
         <FilterSelect
           label="Scope"
           onChange={(value) => updateFilter("scope", value)}
           options={scopes}
+          value={filters.scope}
         />
         <FilterSelect
           label="Severity"
           onChange={(value) => updateFilter("severity", value)}
           options={severities}
+          value={filters.severity}
         />
         <FilterSelect
           label="Outcome"
           onChange={(value) => updateFilter("outcome", value)}
           options={failureOutcomes}
+          value={filters.outcome}
         />
       </div>
 
@@ -210,15 +217,20 @@ function FilterSelect({
   label,
   onChange,
   options,
+  value,
 }: {
   label: string;
   onChange: (value: string) => void;
   options: readonly string[];
+  value?: string;
 }) {
   return (
     <label className="compact-select">
       <span>{label}</span>
-      <select onChange={(event) => onChange(event.target.value)}>
+      <select
+        onChange={(event) => onChange(event.target.value)}
+        value={value ?? ""}
+      >
         <option value="">All</option>
         {options.map((option) => (
           <option key={option}>{option}</option>

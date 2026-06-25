@@ -221,6 +221,7 @@ export const decisionProjectSchema = z.object({
 });
 
 export type DecisionProject = z.infer<typeof decisionProjectSchema>;
+export type ConstraintEvaluation = z.infer<typeof constraintEvaluationSchema>;
 export type HumanDecisionRecord = z.infer<typeof humanDecisionRecordSchema>;
 export type DecisionCommitments = z.infer<typeof decisionCommitmentsSchema>;
 export type FinalDecisionOutcome = HumanDecisionRecord["outcome"];

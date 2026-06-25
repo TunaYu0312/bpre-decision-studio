@@ -1,7 +1,6 @@
 import {
   BookOpenCheck,
   CalendarRange,
-  Gauge,
   LayoutDashboard,
   LibraryBig,
   ListChecks,

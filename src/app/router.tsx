@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from "react-router";
 
 import { DecisionAgendaPage } from "@/features/decisions/decision-agenda";
 import { DecisionHomePage } from "@/features/decisions/decision-home";
+import { DecisionWorkspacePage } from "@/features/decisions/decision-workspace";
+import { ReviewFollowUpPage } from "@/features/decisions/review-follow-up";
 import { ConstitutionDetailPage } from "@/features/constitutions/constitution-detail";
 import { ConstitutionFormPage } from "@/features/constitutions/constitution-form";
 import { ConstitutionListPage } from "@/features/constitutions/constitution-list";
@@ -41,7 +43,7 @@ export function AppRoutes() {
           path="/constraints/:id"
         />
         <Route
-          element={<PlannedPage title="Decision Meeting Workspace" />}
+          element={<DecisionWorkspacePage />}
           path="/decisions/:id"
         />
         <Route
@@ -49,7 +51,7 @@ export function AppRoutes() {
           path="/evaluation"
         />
         <Route
-          element={<PlannedPage title="Review & Follow-up" />}
+          element={<ReviewFollowUpPage />}
           path="/review-follow-up"
         />
         <Route

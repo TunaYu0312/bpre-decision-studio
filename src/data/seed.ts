@@ -7,13 +7,17 @@ import {
   type Constitution,
 } from "@/domain/constitution";
 import {
+  constraintBlueprintSchema,
+  type ConstraintBlueprint,
+} from "@/domain/constraint-blueprint";
+import {
   constraintSchema,
   type Constraint,
 } from "@/domain/constraint";
 
 import type { WorkspaceRepository } from "./repository";
 
-const SEED_VERSION = 1;
+const SEED_VERSION = 2;
 const CREATED_AT = "2026-01-01T00:00:00.000Z";
 const CONSTITUTION_ID = "constitution-profit-repair-2026-v1";
 
@@ -100,7 +104,14 @@ export const seedConstitutionRules: ConstitutionRule[] = [
     pillar: "Brand",
     name: "Brand Value Protection",
     principle:
-      "Signature products cannot be used to buy short-term traffic at the expense of trust and value perception.",
+      "Signature-product quality and value perception cannot be compromised for short-term traffic.",
+    strategicStage: "Profit Repair",
+    ruleType: "Non-Negotiable Red Line",
+    applicableDecisionTypes: ["Promotion", "Pricing", "Menu"],
+    relevantPillars: ["Brand"],
+    escalationAuthority: "CEO",
+    status: "Active",
+    version: "1.0",
     createdAt: CREATED_AT,
   },
   {
@@ -110,7 +121,14 @@ export const seedConstitutionRules: ConstitutionRule[] = [
     pillar: "Product",
     name: "Quality and Complexity Discipline",
     principle:
-      "Core quality is protected and product complexity must remain executable.",
+      "Protect core quality while controlling food cost, complexity, and margin.",
+    strategicStage: "Profit Repair",
+    ruleType: "Strategic Guardrail",
+    applicableDecisionTypes: ["Promotion", "Menu", "New Product"],
+    relevantPillars: ["Product"],
+    escalationAuthority: "COO",
+    status: "Active",
+    version: "1.0",
     createdAt: CREATED_AT,
   },
   {
@@ -120,7 +138,14 @@ export const seedConstitutionRules: ConstitutionRule[] = [
     pillar: "Restaurant/Retail",
     name: "Service Capacity Protection",
     principle:
-      "Commercial activity must remain executable without material service degradation.",
+      "Keep changes executable within peak capacity, service, labor, and availability limits.",
+    strategicStage: "Profit Repair",
+    ruleType: "Strategic Guardrail",
+    applicableDecisionTypes: ["Generic", "Promotion", "Menu", "New Product"],
+    relevantPillars: ["Restaurant/Retail"],
+    escalationAuthority: "COO",
+    status: "Active",
+    version: "1.0",
     createdAt: CREATED_AT,
   },
   {
@@ -130,10 +155,160 @@ export const seedConstitutionRules: ConstitutionRule[] = [
     pillar: "Economic Box",
     name: "Economic Box Discipline",
     principle:
-      "Every material project requires a credible profit, payback, and exit logic.",
+      "Require non-negative incremental EBITDA, explicit payback, and disciplined investment.",
+    strategicStage: "Profit Repair",
+    ruleType: "Non-Negotiable Red Line",
+    applicableDecisionTypes: [
+      "Generic",
+      "Promotion",
+      "Pricing",
+      "New Product",
+      "Store Network",
+    ],
+    relevantPillars: ["Economic Box"],
+    escalationAuthority: "CFO",
+    status: "Active",
+    version: "1.0",
     createdAt: CREATED_AT,
   },
 ].map((rule) => constitutionRuleSchema.parse(rule));
+
+export const seedConstraintBlueprints: ConstraintBlueprint[] = [
+  {
+    id: "blueprint-brand-discount",
+    blueprintId: "BP-BR-001",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-brand-value-protection",
+    pillar: "Brand",
+    controlObjective: "Protect signature-product price perception",
+    riskToAvoid:
+      "Short-term traffic buying that weakens normal-price credibility.",
+    metricKey: "discount_pct",
+    thresholdSource:
+      "Decision Constitution price-credibility principle and the demo management tolerance for standard promotions.",
+    ruleType: "Adjustable Guardrail",
+    evaluationOutcome: "Revise",
+    exceptionAuthority: "CEO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-brand-signature-discount",
+    blueprintId: "BP-BR-002",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-brand-value-protection",
+    pillar: "Brand",
+    controlObjective: "Prevent signature products from becoming discount bait",
+    riskToAvoid:
+      "Loss of signature-product value perception and customer trust.",
+    metricKey: "signature_standalone_deep_discount",
+    thresholdSource:
+      "Decision Constitution non-negotiable protection of signature-product quality and value perception.",
+    ruleType: "Hard Red Line",
+    evaluationOutcome: "Escalate",
+    exceptionAuthority: "CEO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-product-food-cost",
+    blueprintId: "BP-PR-001",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-product-quality-complexity",
+    pillar: "Product",
+    controlObjective: "Protect pilot product margin without reducing quality",
+    riskToAvoid: "A product proposition that cannot support the economic box.",
+    metricKey: "food_cost_pct",
+    thresholdSource:
+      "Illustrative pilot unit-economics standard for the Profit Repair stage.",
+    ruleType: "Adjustable Guardrail",
+    evaluationOutcome: "Revise",
+    exceptionAuthority: "CFO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-product-ingredient-complexity",
+    blueprintId: "BP-PR-002",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-product-quality-complexity",
+    pillar: "Product",
+    controlObjective: "Keep new-product complexity operationally executable",
+    riskToAvoid:
+      "Supply-chain and store-execution failure caused by unnecessary ingredients.",
+    metricKey: "new_ingredient_count",
+    thresholdSource:
+      "Illustrative store-execution limit requiring operations review above one new ingredient.",
+    ruleType: "Approval Threshold",
+    evaluationOutcome: "Escalate",
+    exceptionAuthority: "COO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-restaurant-wait-time",
+    blueprintId: "BP-RR-001",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-operations-capacity",
+    pillar: "Restaurant/Retail",
+    controlObjective: "Protect peak-period customer waiting time",
+    riskToAvoid:
+      "Commercial activity that materially degrades customer experience.",
+    metricKey: "wait_time_increase_minutes",
+    thresholdSource:
+      "Customer-experience non-negotiable on wait-time degradation; the demo tolerance is one minute.",
+    ruleType: "Adjustable Guardrail",
+    evaluationOutcome: "Revise",
+    exceptionAuthority: "COO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-restaurant-prep-time",
+    blueprintId: "BP-RR-002",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-operations-capacity",
+    pillar: "Restaurant/Retail",
+    controlObjective: "Keep preparation changes within store capacity",
+    riskToAvoid:
+      "A product or promotion mechanic that overloads peak execution.",
+    metricKey: "prep_time_increase_seconds",
+    thresholdSource:
+      "Illustrative peak-capacity preparation-time tolerance for the demo.",
+    ruleType: "Adjustable Guardrail",
+    evaluationOutcome: "Revise",
+    exceptionAuthority: "COO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-economic-ebitda",
+    blueprintId: "BP-EB-001",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-economic-box",
+    pillar: "Economic Box",
+    controlObjective: "Prevent value-destructive projects from approval",
+    riskToAvoid:
+      "Approval of a project with negative incremental operating profit.",
+    metricKey: "incremental_ebitda",
+    thresholdSource:
+      "Decision Constitution economic boundary requiring non-negative incremental EBITDA.",
+    ruleType: "Hard Red Line",
+    evaluationOutcome: "Escalate",
+    exceptionAuthority: "CEO",
+    createdAt: CREATED_AT,
+  },
+  {
+    id: "blueprint-economic-payback",
+    blueprintId: "BP-EB-002",
+    constitutionVersionId: CONSTITUTION_ID,
+    parentArticleId: "rule-economic-box",
+    pillar: "Economic Box",
+    controlObjective: "Protect promotion investment velocity and cash discipline",
+    riskToAvoid: "Capital tied up in promotions with slow or uncertain returns.",
+    metricKey: "payback_months",
+    thresholdSource:
+      "Illustrative standard-promotion investment policy for the Profit Repair stage.",
+    ruleType: "Adjustable Guardrail",
+    evaluationOutcome: "Revise",
+    exceptionAuthority: "CFO",
+    createdAt: CREATED_AT,
+  },
+].map((blueprint) => constraintBlueprintSchema.parse(blueprint));
 
 function seededConstraint(
   record: Omit<
@@ -164,6 +339,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-brand-discount-limit",
     constraintId: "BR-PR-001",
     constitutionRuleId: "rule-brand-value-protection",
+    constraintBlueprintId: "blueprint-brand-discount",
+    derivationRationale:
+      "The Article protects normal-price credibility; discount percentage is the direct measurable signal, and values above 20% require redesign.",
     pillar: "Brand",
     constraintType: "Adjustable Guardrail",
     name: "Promotion discount must not exceed 20%",
@@ -186,6 +364,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-brand-signature-discount",
     constraintId: "BR-PR-002",
     constitutionRuleId: "rule-brand-value-protection",
+    constraintBlueprintId: "blueprint-brand-signature-discount",
+    derivationRationale:
+      "The Article makes signature-product value non-negotiable, so standalone deep discounting is represented as a prohibited boolean condition.",
     pillar: "Brand",
     constraintType: "Hard Red Line",
     name: "No standalone deep discount on signature products",
@@ -209,6 +390,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-product-food-cost",
     constraintId: "PR-PR-001",
     constitutionRuleId: "rule-product-quality-complexity",
+    constraintBlueprintId: "blueprint-product-food-cost",
+    derivationRationale:
+      "The Article requires margin control without a quality reduction; pilot food-cost percentage tests whether the proposed recipe remains viable.",
     pillar: "Product",
     constraintType: "Adjustable Guardrail",
     name: "Pilot food cost must not exceed 35%",
@@ -231,6 +415,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-product-ingredient-complexity",
     constraintId: "PR-PR-002",
     constitutionRuleId: "rule-product-quality-complexity",
+    constraintBlueprintId: "blueprint-product-ingredient-complexity",
+    derivationRationale:
+      "Ingredient count is a practical proxy for supply and store complexity; more than one new ingredient requires operations approval.",
     pillar: "Product",
     constraintType: "Approval Threshold",
     name: "No more than one new ingredient without operations review",
@@ -253,6 +440,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-restaurant-wait-time",
     constraintId: "RR-PR-001",
     constitutionRuleId: "rule-operations-capacity",
+    constraintBlueprintId: "blueprint-restaurant-wait-time",
+    derivationRationale:
+      "The Article protects service capacity; incremental wait time measures the direct customer impact and must remain within one minute.",
     pillar: "Restaurant/Retail",
     constraintType: "Adjustable Guardrail",
     name: "Wait-time increase must not exceed one minute",
@@ -275,6 +465,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-restaurant-prep-time",
     constraintId: "RR-PR-002",
     constitutionRuleId: "rule-operations-capacity",
+    constraintBlueprintId: "blueprint-restaurant-prep-time",
+    derivationRationale:
+      "Preparation-time increase is a direct execution-capacity indicator; more than 15 seconds triggers redesign before rollout.",
     pillar: "Restaurant/Retail",
     constraintType: "Adjustable Guardrail",
     name: "Preparation-time increase must not exceed 15 seconds",
@@ -297,6 +490,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-economic-ebitda",
     constraintId: "EB-PR-001",
     constitutionRuleId: "rule-economic-box",
+    constraintBlueprintId: "blueprint-economic-ebitda",
+    derivationRationale:
+      "The Article explicitly requires non-negative incremental EBITDA, so zero is the atomic lower boundary and failure requires escalation.",
     pillar: "Economic Box",
     constraintType: "Hard Red Line",
     name: "Incremental EBITDA must be non-negative",
@@ -320,6 +516,9 @@ export const seedConstraints: Constraint[] = [
     id: "constraint-economic-payback",
     constraintId: "EB-PR-002",
     constitutionRuleId: "rule-economic-box",
+    constraintBlueprintId: "blueprint-economic-payback",
+    derivationRationale:
+      "The Article requires explicit payback and disciplined investment; three months is the demo standard for a routine promotion.",
     pillar: "Economic Box",
     constraintType: "Adjustable Guardrail",
     name: "Standard promotion payback must not exceed three months",
@@ -346,6 +545,7 @@ export async function loadSeedData(
   return repository.seedWorkspaceIfNeeded(SEED_VERSION, {
     constitutions: [seedConstitution],
     constitutionRules: seedConstitutionRules,
+    constraintBlueprints: seedConstraintBlueprints,
     constraints: seedConstraints,
   });
 }

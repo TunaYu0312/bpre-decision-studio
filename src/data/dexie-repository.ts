@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from "dexie";
 
 import type { ConstitutionRule } from "@/domain/constitution-rule";
 import type { Constitution } from "@/domain/constitution";
+import type { ConstraintBlueprint } from "@/domain/constraint-blueprint";
 import type { Constraint } from "@/domain/constraint";
 import type { ConstraintStatus } from "@/domain/constraint";
 import {
@@ -21,6 +22,7 @@ interface WorkspaceMeta {
 class WorkspaceDatabase extends Dexie {
   constitutions!: EntityTable<Constitution, "id">;
   constitutionRules!: EntityTable<ConstitutionRule, "id">;
+  constraintBlueprints!: EntityTable<ConstraintBlueprint, "id">;
   constraints!: EntityTable<Constraint, "id">;
   workspaceMeta!: EntityTable<WorkspaceMeta, "key">;
 
@@ -30,6 +32,16 @@ class WorkspaceDatabase extends Dexie {
       constitutions:
         "id, constitutionId, status, [scope+scopeValue], effectiveDate, updatedAt",
       constitutionRules: "id, ruleId, constitutionVersionId, pillar",
+      constraints:
+        "id, constraintId, status, pillar, constitutionVersionId, metricKey, severity, outcomeIfFailed",
+      workspaceMeta: "key",
+    });
+    this.version(2).stores({
+      constitutions:
+        "id, constitutionId, status, [scope+scopeValue], effectiveDate, updatedAt",
+      constitutionRules: "id, ruleId, constitutionVersionId, pillar",
+      constraintBlueprints:
+        "id, blueprintId, constitutionVersionId, parentArticleId, pillar, metricKey",
       constraints:
         "id, constraintId, status, pillar, constitutionVersionId, metricKey, severity, outcomeIfFailed",
       workspaceMeta: "key",
@@ -100,6 +112,25 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
       .toArray();
   }
 
+  listConstraintBlueprints(): Promise<ConstraintBlueprint[]> {
+    return this.database.constraintBlueprints.toArray();
+  }
+
+  getConstraintBlueprint(
+    id: string,
+  ): Promise<ConstraintBlueprint | undefined> {
+    return this.database.constraintBlueprints.get(id);
+  }
+
+  listConstraintBlueprintsForArticle(
+    parentArticleId: string,
+  ): Promise<ConstraintBlueprint[]> {
+    return this.database.constraintBlueprints
+      .where("parentArticleId")
+      .equals(parentArticleId)
+      .toArray();
+  }
+
   async listConstraints(): Promise<Constraint[]> {
     const records = await this.database.constraints.toArray();
     return records.sort((left, right) =>
@@ -155,6 +186,7 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
         this.database.workspaceMeta,
         this.database.constitutions,
         this.database.constitutionRules,
+        this.database.constraintBlueprints,
         this.database.constraints,
       ],
       async () => {
@@ -166,6 +198,9 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
         await this.database.constitutions.bulkPut(workspace.constitutions);
         await this.database.constitutionRules.bulkPut(
           workspace.constitutionRules,
+        );
+        await this.database.constraintBlueprints.bulkPut(
+          workspace.constraintBlueprints,
         );
         await this.database.constraints.bulkPut(workspace.constraints);
         await this.database.workspaceMeta.put({

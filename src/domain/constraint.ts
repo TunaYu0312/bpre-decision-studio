@@ -26,7 +26,7 @@ export const constraintTypes = [
   "Adjustable Guardrail",
   "Approval Threshold",
   "Information Requirement",
-  "Advisory Check",
+  "Monitoring Trigger",
 ] as const;
 
 export const decisionTypes = [
@@ -91,6 +91,8 @@ export const constraintSchema = z
     status: z.enum(constraintStatuses),
     constitutionVersionId: nonEmptyStringSchema,
     constitutionRuleId: nonEmptyStringSchema,
+    constraintBlueprintId: nonEmptyStringSchema,
+    derivationRationale: nonEmptyStringSchema,
     pillar: z.enum(bprePillars),
     constraintType: z.enum(constraintTypes),
     name: nonEmptyStringSchema,

@@ -1,58 +1,61 @@
 import {
   BookOpenCheck,
-  ClipboardCheck,
-  FileStack,
+  CalendarRange,
   Gauge,
+  LayoutDashboard,
   LibraryBig,
   ListChecks,
-  Settings,
+  Network,
+  PanelsTopLeft,
+  ScrollText,
 } from "lucide-react";
 
 export const navigationItems = [
-  { label: "Overview", to: "/demo", icon: Gauge, enabled: true },
+  { label: "Home", to: "/home", icon: LayoutDashboard },
+  {
+    label: "Decision Agenda",
+    to: "/decision-agenda",
+    icon: CalendarRange,
+  },
+  {
+    label: "Decision Workspace",
+    to: "/decisions/decision-breakfast-combo-pilot",
+    icon: PanelsTopLeft,
+  },
+  {
+    label: "Review & Follow-up",
+    to: "/review-follow-up",
+    icon: ListChecks,
+  },
+] as const;
+
+export const governanceItems = [
   {
     label: "Decision Constitutions",
     to: "/constitutions",
     icon: BookOpenCheck,
-    enabled: true,
   },
   {
     label: "Constraint Library",
     to: "/constraints",
     icon: LibraryBig,
-    enabled: true,
   },
   {
-    label: "Decision Projects",
-    to: "/decision-projects",
-    icon: FileStack,
-    enabled: false,
+    label: "Rule Derivation",
+    to: "/constraints/constraint-brand-discount-limit",
+    icon: Network,
   },
   {
-    label: "Evaluation Queue",
-    to: "/evaluation",
-    icon: ClipboardCheck,
-    enabled: false,
-  },
-  {
-    label: "Action & Review",
-    to: "/action-review",
-    icon: ListChecks,
-    enabled: false,
-  },
-  {
-    label: "Export / Settings",
-    to: "/settings",
-    icon: Settings,
-    enabled: false,
+    label: "Version History",
+    to: "/constitutions",
+    icon: ScrollText,
   },
 ] as const;
 
-export const decisionFlow = [
-  { label: "Constitution", enabled: true },
-  { label: "Constraints", enabled: true },
-  { label: "Decision Card", enabled: false },
-  { label: "Evaluation", enabled: false },
-  { label: "Action", enabled: false },
-  { label: "Review", enabled: false },
+export const meetingLifecycle = [
+  "Prepared",
+  "Evaluated",
+  "Meeting",
+  "Action",
+  "Review",
 ] as const;

@@ -1,9 +1,9 @@
-import { ArrowRight, CircleDot, Menu, ShieldCheck } from "lucide-react";
+import { CircleDot, Menu, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
 
 import { copy } from "./copy";
-import { decisionFlow, navigationItems } from "./navigation";
+import { governanceItems, navigationItems } from "./navigation";
 
 export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +45,25 @@ export function AppShell() {
               >
                 <Icon aria-hidden="true" size={18} />
                 <span className="flex-1">{item.label}</span>
-                {!item.enabled && <span className="planned-label">Planned</span>}
+              </NavLink>
+            );
+          })}
+          <div className="nav-group-label">Rules &amp; Governance</div>
+          {governanceItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-item nav-item--governance ${
+                    isActive ? "nav-item--active" : ""
+                  }`
+                }
+                key={`${item.label}-${item.to}`}
+                onClick={() => setMenuOpen(false)}
+                to={item.to}
+              >
+                <Icon aria-hidden="true" size={17} />
+                <span className="flex-1">{item.label}</span>
               </NavLink>
             );
           })}
@@ -71,38 +89,13 @@ export function AppShell() {
               <Menu aria-hidden="true" size={20} />
             </button>
             <p className="hidden text-sm text-slate-400 sm:block">
-              Strategy first. Evidence explicit. Accountability preserved.
+              Decision agenda · Meeting workspace · Accountable follow-up
             </p>
             <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
               <CircleDot aria-hidden="true" size={14} />
               Demo workspace
             </div>
           </div>
-
-          <nav
-            aria-label="Decision workflow"
-            className="flow-rail overflow-x-auto px-4 pb-3 sm:px-6 lg:px-8"
-          >
-            {decisionFlow.map((step, index) => (
-              <div className="flex items-center" key={step.label}>
-                <span
-                  className={`flow-step ${
-                    step.enabled ? "flow-step--enabled" : ""
-                  }`}
-                >
-                  <span>{index + 1}</span>
-                  {step.label}
-                </span>
-                {index < decisionFlow.length - 1 && (
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="mx-2 shrink-0 text-slate-700"
-                    size={14}
-                  />
-                )}
-              </div>
-            ))}
-          </nav>
         </header>
 
         <main className="px-4 py-8 sm:px-6 lg:px-8" id="main-content">

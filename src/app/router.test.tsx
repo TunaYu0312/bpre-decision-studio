@@ -5,15 +5,15 @@ import { describe, expect, it } from "vitest";
 import { AppRoutes } from "./router";
 
 describe("application routes", () => {
-  it("renders the product title on the public demo route", () => {
+  it("renders the operational home as the default product route", () => {
     render(
-      <MemoryRouter initialEntries={["/demo"]}>
+      <MemoryRouter initialEntries={["/home"]}>
         <AppRoutes />
       </MemoryRouter>,
     );
 
     expect(
-      screen.getByRole("heading", { name: "BPR&E Decision Studio" }),
+      screen.getByRole("heading", { name: "Decisions requiring attention" }),
     ).toBeInTheDocument();
   });
 });

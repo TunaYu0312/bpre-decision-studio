@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 
-import { DemoPage } from "@/features/demo/demo-page";
+import { DecisionAgendaPage } from "@/features/decisions/decision-agenda";
+import { DecisionHomePage } from "@/features/decisions/decision-home";
 import { ConstitutionDetailPage } from "@/features/constitutions/constitution-detail";
 import { ConstitutionFormPage } from "@/features/constitutions/constitution-form";
 import { ConstitutionListPage } from "@/features/constitutions/constitution-list";
@@ -15,8 +16,10 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route element={<AppShell />}>
-        <Route element={<Navigate replace to="/demo" />} index />
-        <Route element={<DemoPage />} path="/demo" />
+        <Route element={<Navigate replace to="/home" />} index />
+        <Route element={<DecisionHomePage />} path="/home" />
+        <Route element={<Navigate replace to="/home" />} path="/demo" />
+        <Route element={<DecisionAgendaPage />} path="/decision-agenda" />
         <Route element={<ConstitutionListPage />} path="/constitutions" />
         <Route element={<ConstitutionFormPage />} path="/constitutions/new" />
         <Route
@@ -38,16 +41,16 @@ export function AppRoutes() {
           path="/constraints/:id"
         />
         <Route
-          element={<PlannedPage title="Decision Projects" />}
-          path="/decision-projects"
+          element={<PlannedPage title="Decision Meeting Workspace" />}
+          path="/decisions/:id"
         />
         <Route
           element={<PlannedPage title="Evaluation Queue" />}
           path="/evaluation"
         />
         <Route
-          element={<PlannedPage title="Action & Review" />}
-          path="/action-review"
+          element={<PlannedPage title="Review & Follow-up" />}
+          path="/review-follow-up"
         />
         <Route
           element={<PlannedPage title="Export / Settings" />}

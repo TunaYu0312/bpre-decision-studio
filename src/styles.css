@@ -88,6 +88,21 @@ textarea {
   color: #fde68a;
 }
 
+.nav-group-label {
+  margin: 1.25rem 0.75rem 0.45rem;
+  color: #64748b;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-item--governance {
+  padding-block: 0.55rem;
+  color: #718096;
+  font-size: 0.8rem;
+}
+
 .planned-label {
   border: 1px solid rgb(148 163 184 / 0.18);
   border-radius: 999px;
@@ -152,6 +167,152 @@ textarea {
   background:
     radial-gradient(circle at top right, rgb(245 158 11 / 0.08), transparent 38%),
     #0b1424;
+}
+
+.decision-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.decision-kpi {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.7rem;
+  align-items: center;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1rem;
+  background: #0b1424;
+  padding: 1.1rem;
+}
+
+.decision-kpi strong {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.decision-kpi span {
+  grid-column: 1 / -1;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.decision-kpi--amber svg { color: #fbbf24; }
+.decision-kpi--red svg { color: #f87171; }
+.decision-kpi--violet svg { color: #a78bfa; }
+.decision-kpi--blue svg { color: #60a5fa; }
+
+.operating-panel {
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1rem;
+  background: #0b1424;
+  padding: 1.25rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-heading h2 {
+  margin-top: 0.35rem;
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.section-heading > span {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.attention-card {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 0.9rem;
+  background: rgb(15 23 42 / 65%);
+  padding: 1rem;
+}
+
+.attention-card h3 {
+  margin-top: 0.8rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.attention-card p {
+  margin-top: 0.45rem;
+  color: #94a3b8;
+  font-size: 0.83rem;
+  line-height: 1.6;
+}
+
+.attention-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
+.meeting-mode-badge {
+  display: inline-flex;
+  border: 1px solid rgb(251 191 36 / 28%);
+  border-radius: 999px;
+  background: rgb(251 191 36 / 8%);
+  padding: 0.25rem 0.55rem;
+  color: #fcd34d;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.deadline-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.deadline-list li {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.8rem;
+}
+
+.deadline-list time {
+  color: #fcd34d;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.deadline-list strong,
+.deadline-list span {
+  display: block;
+}
+
+.deadline-list strong {
+  color: #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.deadline-list span {
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 640px) {
+  .decision-kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .attention-card {
+    grid-template-columns: 1fr auto;
+  }
 }
 
 .hero-panel {

@@ -67,6 +67,9 @@ function constraint(overrides: Partial<Constraint> = {}): Constraint {
     status: "Draft",
     constitutionVersionId: "constitution-profit-repair-1-0",
     constitutionRuleId: "rule-brand-value",
+    constraintBlueprintId: "blueprint-brand-discount",
+    derivationRationale:
+      "Discount percentage operationalizes the protected price-perception principle.",
     pillar: "Brand",
     constraintType: "Adjustable Guardrail",
     name: "Promotion discount limit",

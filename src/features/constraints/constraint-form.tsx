@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { z } from "zod";
 
@@ -104,13 +104,18 @@ export function ConstraintFormPage() {
       ...seedConstraints[0],
       constraintId: "",
       name: "",
-      metricKey: "",
       status: "Draft",
       changeNotes: "",
     }),
   });
-  const selectedArticleId = form.watch("constitutionRuleId");
-  const selectedBlueprintId = form.watch("constraintBlueprintId");
+  const selectedArticleId = useWatch({
+    control: form.control,
+    name: "constitutionRuleId",
+  });
+  const selectedBlueprintId = useWatch({
+    control: form.control,
+    name: "constraintBlueprintId",
+  });
   const selectedArticle = articles.find(
     (article) => article.id === selectedArticleId,
   );

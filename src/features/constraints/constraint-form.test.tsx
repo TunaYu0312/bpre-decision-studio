@@ -52,6 +52,9 @@ describe("Constraint form", () => {
         "Signature-product quality and value perception cannot be compromised for short-term traffic.",
       ),
     ).toBeVisible();
+    expect(
+      screen.getByRole("textbox", { name: "Metric key" }),
+    ).toHaveValue("discount_pct");
 
     const rationale = screen.getByRole("textbox", {
       name: "Derivation rationale",

@@ -278,6 +278,163 @@ For each pillar:
 
 Translate Constitution principles into measurable, inspectable, and reusable decision boundaries.
 
+## Constraint Derivation Mechanism
+
+### Purpose
+
+The Constraint Library must not operate as a disconnected list of thresholds.
+Every Constraint must be traceable to a specific Decision Constitution Article
+and explain how a strategic principle becomes an actionable decision boundary.
+
+### Governance chain
+
+```text
+Decision Constitution Article
+→ BPR&E Control Objective
+→ Constraint Blueprint
+→ Atomic Constraint
+→ Decision Card Evaluation
+→ Pass / Revise / Escalate
+→ Review and Rule Update
+```
+
+This chain is the required lineage model for creating, evaluating, reviewing,
+and updating constraints.
+
+### Step 1 — Structure Decision Constitution Articles
+
+Each Constitution principle that can govern a decision must be represented as a
+formal Article with:
+
+| Field | Description |
+|---|---|
+| Constitution ID | Stable identifier of the parent Constitution |
+| Article ID | Stable identifier of the governing Article |
+| Strategic Stage | Stage in which the Article applies |
+| Strategic Principle | Exact Constitution sentence used as the source |
+| Rule Type | Non-negotiable red line, strategic guardrail, approval mandate, information mandate, or monitoring principle |
+| Applicable Decision Types | Promotion, pricing, menu, new product, store network, generic, or custom |
+| Relevant BPR&E Pillars | Brand, Product, Restaurant/Retail, and/or Economic Box |
+| Escalation Authority | CEO, CFO, COO, or delegated functional leader |
+| Status and Version | Governed Article lifecycle and version |
+
+Example:
+
+| Field | Value |
+|---|---|
+| Article ID | `BR-01` |
+| Strategic Principle | “Signature products must not lose quality, value perception, or normal price credibility in exchange for short-term traffic.” |
+| Rule Type | Non-Negotiable Red Line |
+| Applicable Decision Types | Promotion, Pricing, Menu |
+| Relevant BPR&E Pillars | Brand, Product, Restaurant/Retail, Economic Box |
+| Escalation Authority | CEO |
+
+### Step 2 — Generate Constraint Blueprints
+
+For every applicable BPR&E pillar, the system must create a Constraint Blueprint
+that interprets the Article before an atomic threshold is created.
+
+| Field | Description |
+|---|---|
+| Constraint Blueprint ID | Stable identifier of the interpretation layer |
+| Parent Constitution ID | Constitution version from which the blueprint is derived |
+| Parent Article ID | Exact governing Article |
+| BPR&E Pillar | Pillar controlled by the blueprint |
+| Control Objective | What the blueprint protects or requires |
+| Risk to Avoid | Failure mode the blueprint is designed to prevent |
+| Metric or Data Field | Machine-readable signal used by atomic constraints |
+| Threshold Source | Evidence, policy, benchmark, management tolerance, or Article language supporting the threshold |
+| Rule Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Monitoring Trigger |
+| Evaluation Outcome | Pass, Revise, Escalate, Reject, or Incomplete Data |
+| Exception Authority | Role allowed to approve an exception |
+
+Example Brand blueprint:
+
+| Field | Value |
+|---|---|
+| Control Objective | Protect signature-product price perception |
+| Metric | Discount Rate |
+| Threshold | `<= 20%` |
+| Rule Type | Adjustable Guardrail |
+| Failed Outcome | Revise |
+| Exception Authority | CEO |
+
+### Step 3 — Generate Atomic Constraints
+
+Each executable constraint must be expressible as:
+
+```text
+IF [Scope]
+THEN [Metric] [Operator] [Threshold]
+ELSE [Evaluation Outcome]
+```
+
+Every Atomic Constraint requires:
+
+- Constraint ID
+- Parent Constitution ID
+- Parent Article ID
+- Constraint Blueprint ID
+- Derivation Rationale
+- BPR&E Pillar
+- Decision Type
+- Scope
+- Metric
+- Operator
+- Threshold
+- Unit
+- Severity
+- Evaluation Outcome
+- Exception Owner
+- Review Frequency
+- Effective Date
+- Version
+- Status
+
+The Derivation Rationale must explain why the selected metric and threshold are
+a valid operational interpretation of the exact Constitution sentence. IDs
+alone do not satisfy traceability.
+
+### Constraint types and evaluation behavior
+
+1. **Hard Red Line** — Failed evaluation produces `Escalate` or `Reject`.
+2. **Adjustable Guardrail** — Failed evaluation produces `Revise` and resubmission.
+3. **Approval Threshold** — Failed evaluation requires CEO or designated-authority approval.
+4. **Information Requirement** — Missing evidence produces `Incomplete Data`; the decision cannot be evaluated.
+5. **Monitoring Trigger** — The decision may pass with a mandatory review condition.
+
+### Step 4 — Apply Constraints to Decision Cards
+
+The Evaluation Engine must load constraints using:
+
+- Active Constitution Version
+- Applicable Article ID
+- Decision Type
+- BPR&E Pillar
+- Project Scope
+- Strategic Stage
+
+The engine may return:
+
+- `Pass`
+- `Revise`
+- `Escalate`
+- `Reject`
+- `Incomplete Data`
+
+Each evaluation must create an immutable snapshot containing:
+
+- Constitution Version
+- Article ID
+- Constraint Version
+- Project Inputs
+- Evaluation Results
+- Exception Requests
+- Timestamp
+
+Later changes to the Constitution, Blueprint, or Constraint must not alter a
+historical Decision Card evaluation.
+
 ## Constraint lifecycle
 
 - **Draft:** editable and not evaluated.
@@ -290,8 +447,8 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 1. **Hard Red Line** — Violation produces `Escalate` or `Stop` recommendation.
 2. **Adjustable Guardrail** — Violation produces `Revise` recommendation.
 3. **Approval Threshold** — Violation requires specified approver escalation.
-4. **Information Requirement** — Missing required information produces `Revise`.
-5. **Advisory Check** — Shown to reviewers but does not determine recommendation alone.
+4. **Information Requirement** — Missing required information produces `Incomplete Data`.
+5. **Monitoring Trigger** — A decision may pass with a mandatory review condition.
 
 ## Required constraint fields
 
@@ -300,10 +457,12 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 | Constraint ID | Unique ID, e.g. `BR-PR-001` |
 | Version | Version number |
 | Status | Draft / Active / Suspended / Retired |
-| Constitution Version ID | Parent Constitution rule/version |
-| Constitution Rule ID | Specific strategic principle linked to the constraint |
+| Constitution Version ID | Parent Constitution version |
+| Parent Constitution Article ID | Specific strategic principle linked to the constraint |
+| Constraint Blueprint ID | Governed interpretation from Article to metric |
+| Derivation Rationale | Why the metric and threshold validly operationalize the exact Article sentence |
 | BPR&E Pillar | Brand / Product / Restaurant-Retail / Economic Box |
-| Constraint Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Advisory |
+| Constraint Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Monitoring Trigger |
 | Constraint Name | Human-readable label |
 | Description / Rationale | Why the constraint exists |
 | Scope | Business unit, market, decision type, product category, store format, etc. |
@@ -352,7 +511,12 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 
 - Table view with filter by BPR&E pillar, status, decision type, scope, severity, and outcome.
 - Search by Constraint ID, name, or metric key.
+- Search by Constitution Article ID or exact strategic-principle text.
 - Create / edit / clone / suspend / retire constraints.
+- Display the exact linked Constitution sentence in the table and detail view.
+- Display the complete Article → Blueprint → Atomic Constraint derivation chain.
+- Select governed Constitution Articles and Constraint Blueprints when creating or editing a constraint; do not rely on free-text IDs.
+- Show a clear traceability error if an Article or Blueprint cannot be resolved.
 - Display linked Constitution version and linked decision projects.
 - Show an impact warning before retiring or suspending a constraint with open projects.
 - Export filtered constraints to JSON and CSV.
@@ -360,6 +524,9 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 ## Acceptance criteria
 
 - A user can create at least one active constraint for each BPR&E pillar.
+- Every Active constraint resolves to one Constitution Article and one Constraint Blueprint.
+- The constraint detail view shows the exact source sentence, control objective, threshold source, derivation rationale, and atomic `IF / THEN / ELSE` rule.
+- A constraint cannot be treated as valid when its Constitution version, Article, pillar, Blueprint, or metric relationship is inconsistent.
 - An active constraint can be applied automatically to a matching Decision Card.
 - Retiring a constraint does not alter previous evaluation snapshots.
 - Constraint data supports numeric, boolean, enum, and required-information checks.

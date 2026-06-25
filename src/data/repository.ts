@@ -3,12 +3,14 @@ import type { Constitution } from "@/domain/constitution";
 import type { ConstraintBlueprint } from "@/domain/constraint-blueprint";
 import type { Constraint } from "@/domain/constraint";
 import type { ConstraintStatus } from "@/domain/constraint";
+import type { DecisionProject } from "@/domain/decision-project";
 
 export interface SeedWorkspace {
   constitutions: Constitution[];
   constitutionRules: ConstitutionRule[];
   constraintBlueprints: ConstraintBlueprint[];
   constraints: Constraint[];
+  decisionProjects: DecisionProject[];
 }
 
 export interface WorkspaceRepository {
@@ -38,6 +40,10 @@ export interface WorkspaceRepository {
     nextStatus: ConstraintStatus,
     now: string,
   ): Promise<Constraint>;
+
+  listDecisionProjects(): Promise<DecisionProject[]>;
+  getDecisionProject(id: string): Promise<DecisionProject | undefined>;
+  putDecisionProject(record: DecisionProject): Promise<void>;
 
   seedWorkspaceIfNeeded(
     seedVersion: number,

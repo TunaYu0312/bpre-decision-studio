@@ -14,10 +14,14 @@ import {
   constraintSchema,
   type Constraint,
 } from "@/domain/constraint";
+import {
+  decisionProjectSchema,
+  type DecisionProject,
+} from "@/domain/decision-project";
 
 import type { WorkspaceRepository } from "./repository";
 
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 const CREATED_AT = "2026-01-01T00:00:00.000Z";
 const CONSTITUTION_ID = "constitution-profit-repair-2026-v1";
 
@@ -539,6 +543,364 @@ export const seedConstraints: Constraint[] = [
   }),
 ];
 
+export const seedDecisionProject: DecisionProject = decisionProjectSchema.parse({
+  id: "decision-breakfast-combo-pilot",
+  projectId: "DP-2026-001",
+  decisionCardVersion: "1.0",
+  title: "Should we approve a 10-day breakfast combo pilot across 30 stores?",
+  subtitle:
+    "A promotion decision designed to increase morning traffic and gross profit dollars without weakening Store-level EBITDA, brand value, or peak-period customer experience.",
+  status: "Revision Required",
+  meetingMode: "Revision Review",
+  recommendation: "Revise",
+  decisionLevel: "L4 Strategic Decision",
+  decisionType: "Promotion",
+  meetingDate: "2026-06-14",
+  decisionDeadline: "2026-06-14",
+  strategicStage: "Profit Repair",
+  constitutionVersionId: CONSTITUTION_ID,
+  decisionRequest: "Approve / Revise / Escalate the 30-store pilot",
+  decisionStatement:
+    "Approve a limited 10-day breakfast combo pilot in 30 stores.",
+  whyNow:
+    "Morning traffic is below target in selected trade areas. The team proposes a bundle offer to improve customer conversion during breakfast hours.",
+  businessObjective:
+    "Increase incremental morning traffic and gross profit dollars while maintaining non-negative Store-level EBITDA.",
+  requestedDecision: "Approve pilot / Return for revision / Escalate to CEO",
+  owner: "Marketing Director",
+  coOwner: "Operations Manager",
+  approver: "CEO",
+  primaryNorthStar: "Store-level EBITDA",
+  supportingKpis: [
+    "Morning traffic",
+    "Average check",
+    "Gross profit dollars",
+    "Wait time",
+    "Repeat rate",
+    "Product mix",
+  ],
+  targetCustomers: [
+    "Core frequency customers",
+    "Value-conscious quality seekers",
+  ],
+  journeyMoment: "Morning visit → Breakfast purchase → Repeat visit",
+  customerProblem:
+    "Customers perceive breakfast as inconvenient or insufficiently valuable during peak morning periods.",
+  experienceNonNegotiables: [
+    "Core product quality must remain unchanged.",
+    "Peak-period waiting time must not materially deteriorate.",
+  ],
+  coreTradeOff: {
+    upside: "Short-term morning traffic growth",
+    downside:
+      "Signature-product value perception, Store-level EBITDA, and peak-period service capacity",
+  },
+  evidence: [
+    {
+      id: "evidence-traffic",
+      metricKey: "traffic_uplift_pct",
+      name: "Expected Traffic Uplift",
+      displayValue: "+12%",
+      value: 12,
+      unit: "%",
+      quality: "Estimated",
+      source: "Morning trade-area opportunity analysis",
+      period: "Apr–May 2026",
+      owner: "Data Team",
+      calculationNote: "Matched-store forecast against morning baseline.",
+      confidence: "Medium",
+    },
+    {
+      id: "evidence-check",
+      metricKey: "average_check_impact_pct",
+      name: "Expected Average Check Impact",
+      displayValue: "-6%",
+      value: -6,
+      unit: "%",
+      quality: "Estimated",
+      source: "Promotion pricing model",
+      period: "Pilot forecast",
+      owner: "Finance Business Partner",
+      calculationNote: "Weighted basket impact under proposed mechanics.",
+      confidence: "Medium",
+    },
+    {
+      id: "evidence-gross-profit",
+      metricKey: "gross_profit_dollars",
+      name: "Expected Gross Profit Dollars",
+      displayValue: "+$18K",
+      value: 18000,
+      unit: "currency",
+      quality: "Estimated",
+      source: "Incremental P&L model",
+      period: "10-day pilot",
+      owner: "Finance Business Partner",
+      calculationNote: "Incremental gross profit across 30 stores.",
+      confidence: "Medium",
+    },
+    {
+      id: "evidence-ebitda",
+      metricKey: "incremental_ebitda",
+      name: "Expected Incremental EBITDA",
+      displayValue: "-$4K",
+      value: -4000,
+      unit: "currency",
+      quality: "Estimated",
+      source: "Incremental P&L model",
+      period: "10-day pilot",
+      owner: "Finance Business Partner",
+      calculationNote: "Includes discount, training, and launch materials.",
+      confidence: "Medium",
+    },
+    {
+      id: "evidence-wait",
+      metricKey: "wait_time_increase_minutes",
+      name: "Expected Wait-Time Impact",
+      displayValue: "+35 seconds",
+      value: 0.58,
+      unit: "minutes",
+      quality: "Verified",
+      source: "Store simulation",
+      period: "Peak-hour trial",
+      owner: "Operations Manager",
+      calculationNote: "Median incremental queue time.",
+      confidence: "High",
+    },
+    {
+      id: "evidence-repeat",
+      metricKey: "repeat_rate_impact",
+      name: "Expected Repeat-Rate Impact",
+      displayValue: "Not yet proven",
+      value: null,
+      unit: "",
+      quality: "Missing",
+      source: "Pilot measurement plan",
+      period: "Day 30",
+      owner: "CRM Lead",
+      calculationNote: "Requires post-pilot cohort observation.",
+      confidence: "Not available",
+    },
+  ],
+  evidenceComplete: 7,
+  evidenceRequired: 8,
+  options: [
+    {
+      id: "option-a",
+      label: "A. Launch proposed pilot",
+      description: "20% combo discount for 10 days",
+      customerValue: "Medium",
+      economicImpact: "Negative EBITDA",
+      constraintStatus: "Revise",
+      recommendation: "Not recommended",
+      recommended: false,
+    },
+    {
+      id: "option-b",
+      label: "B. Revised bundle pilot",
+      description: "Lower discount with add-on mechanism",
+      customerValue: "Medium–High",
+      economicImpact: "Positive EBITDA",
+      constraintStatus: "Pass",
+      recommendation: "Recommended",
+      recommended: true,
+    },
+    {
+      id: "option-c",
+      label: "C. Do not launch",
+      description: "Maintain current breakfast offer",
+      customerValue: "Neutral",
+      economicImpact: "Neutral",
+      constraintStatus: "Pass",
+      recommendation: "Fallback",
+      recommended: false,
+    },
+  ],
+  impacts: [
+    {
+      pillar: "Brand",
+      status: "At Risk",
+      summary:
+        "A bundle can support value perception, but standalone signature-product discounting would weaken normal-price credibility.",
+    },
+    {
+      pillar: "Product",
+      status: "Acceptable",
+      summary:
+        "Core quality remains unchanged and food cost remains within the pilot threshold.",
+    },
+    {
+      pillar: "Restaurant/Retail",
+      status: "Watch",
+      summary:
+        "Waiting-time impact is within the guardrail, with peak-hour monitoring required.",
+    },
+    {
+      pillar: "Economic Box",
+      status: "Failing",
+      summary:
+        "Projected incremental EBITDA is negative under the current offer design.",
+    },
+  ],
+  evaluationSnapshot: {
+    id: "evaluation-breakfast-combo-v1",
+    createdAt: "2026-06-12T09:00:00.000Z",
+    recommendation: "Revise",
+    reason:
+      "The current offer design creates negative incremental EBITDA and weakens signature-product value protection; a compliant revised bundle is available.",
+    readinessComplete: 6,
+    readinessRequired: 8,
+    results: [
+      {
+        constraintId: "constraint-brand-discount-limit",
+        constraintVersion: "1.0",
+        projectCondition: "18% proposed effective discount",
+        projectValue: 18,
+        result: "Pass",
+        outcome: "Continue",
+        requiredAction: "None",
+      },
+      {
+        constraintId: "constraint-brand-signature-discount",
+        constraintVersion: "1.0",
+        projectCondition: "Proposed as a standalone signature item",
+        projectValue: true,
+        result: "Fail",
+        outcome: "Revise",
+        requiredAction: "Convert to bundle or add-on mechanics",
+      },
+      {
+        constraintId: "constraint-product-food-cost",
+        constraintVersion: "1.0",
+        projectCondition: "32% forecast food cost",
+        projectValue: 32,
+        result: "Pass",
+        outcome: "Continue",
+        requiredAction: "None",
+      },
+      {
+        constraintId: "constraint-restaurant-wait-time",
+        constraintVersion: "1.0",
+        projectCondition: "+35 seconds expected wait time",
+        projectValue: 0.58,
+        result: "Pass",
+        outcome: "Monitor",
+        requiredAction: "Review at Day 5",
+      },
+      {
+        constraintId: "constraint-restaurant-prep-time",
+        constraintVersion: "1.0",
+        projectCondition: "+10 seconds preparation time",
+        projectValue: 10,
+        result: "Pass",
+        outcome: "Continue",
+        requiredAction: "Monitor peak execution",
+      },
+      {
+        constraintId: "constraint-economic-ebitda",
+        constraintVersion: "1.0",
+        projectCondition: "-$4K incremental EBITDA",
+        projectValue: -4000,
+        result: "Fail",
+        outcome: "Escalate",
+        requiredAction: "CEO exception or redesign",
+      },
+      {
+        constraintId: "constraint-economic-payback",
+        constraintVersion: "1.0",
+        projectCondition: "4.2-month payback",
+        projectValue: 4.2,
+        result: "Fail",
+        outcome: "Revise",
+        requiredAction: "Change investment or offer mechanics",
+      },
+    ],
+  },
+  relevantArticleIds: [
+    "rule-brand-value-protection",
+    "rule-product-quality-complexity",
+    "rule-operations-capacity",
+    "rule-economic-box",
+  ],
+  requiredResolutions: [
+    "Redesign the offer to avoid standalone signature-product discounting.",
+    "Improve projected incremental EBITDA to non-negative.",
+    "Reduce projected payback to three months or below.",
+    "Confirm Day 5 and Day 30 review accountability.",
+  ],
+  proposedActionPlan: [
+    {
+      id: "action-offer",
+      action: "Finalize revised offer mechanics",
+      owner: "Marketing Director",
+      dueDate: "2026-06-12",
+      status: "Open",
+    },
+    {
+      id: "action-capacity",
+      action: "Confirm kitchen capacity",
+      owner: "Operations Manager",
+      dueDate: "2026-06-12",
+      status: "Open",
+    },
+    {
+      id: "action-training",
+      action: "Train pilot stores",
+      owner: "Area Operations Lead",
+      dueDate: "2026-06-14",
+      status: "Planned",
+    },
+    {
+      id: "action-tracking",
+      action: "Create KPI tracking pack",
+      owner: "Data Team",
+      dueDate: "2026-06-14",
+      status: "Planned",
+    },
+  ],
+  actionPlan: [],
+  timeline: [
+    {
+      id: "timeline-submitted",
+      eventType: "Project Submitted",
+      date: "2026-06-10",
+      description: "Project submitted by Marketing Director.",
+    },
+    {
+      id: "timeline-validated",
+      eventType: "Data Validated",
+      date: "2026-06-11",
+      description:
+        "Data completeness validated by Decision System Team.",
+    },
+    {
+      id: "timeline-evaluated",
+      eventType: "Evaluation Completed",
+      date: "2026-06-12",
+      description: "Constraint evaluation completed.",
+    },
+    {
+      id: "timeline-day-5",
+      eventType: "Review Due",
+      date: "2026-06-19",
+      description: "Day 5 review due.",
+    },
+    {
+      id: "timeline-day-10",
+      eventType: "Review Due",
+      date: "2026-06-24",
+      description: "Day 10 review due.",
+    },
+    {
+      id: "timeline-day-30",
+      eventType: "Review Due",
+      date: "2026-07-14",
+      description: "Day 30 review due.",
+    },
+  ],
+  createdAt: "2026-06-10T08:00:00.000Z",
+  updatedAt: "2026-06-12T09:00:00.000Z",
+});
+
 export async function loadSeedData(
   repository: WorkspaceRepository,
 ): Promise<boolean> {
@@ -547,5 +909,6 @@ export async function loadSeedData(
     constitutionRules: seedConstitutionRules,
     constraintBlueprints: seedConstraintBlueprints,
     constraints: seedConstraints,
+    decisionProjects: [seedDecisionProject],
   });
 }

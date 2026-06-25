@@ -43,6 +43,7 @@ describe("Dexie workspace repository", () => {
       rules: await repository.listConstitutionRules(),
       blueprints: await repository.listConstraintBlueprints(),
       constraints: await repository.listConstraints(),
+      projects: await repository.listDecisionProjects(),
     };
 
     await loadSeedData(repository);
@@ -51,12 +52,20 @@ describe("Dexie workspace repository", () => {
       rules: await repository.listConstitutionRules(),
       blueprints: await repository.listConstraintBlueprints(),
       constraints: await repository.listConstraints(),
+      projects: await repository.listDecisionProjects(),
     };
 
     expect(second).toEqual(first);
     expect(second.constitutions).toHaveLength(1);
     expect(second.rules.length).toBeGreaterThanOrEqual(4);
     expect(second.blueprints).toHaveLength(second.constraints.length);
+    expect(second.projects).toHaveLength(1);
+    expect(second.projects[0]).toMatchObject({
+      projectId: "DP-2026-001",
+      meetingMode: "Revision Review",
+      recommendation: "Revise",
+    });
+    expect(second.projects[0].evaluationSnapshot.results).toHaveLength(7);
     expect(new Set(second.constraints.map((item) => item.pillar))).toEqual(
       new Set(bprePillars),
     );

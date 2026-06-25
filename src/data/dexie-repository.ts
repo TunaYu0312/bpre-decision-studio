@@ -5,6 +5,7 @@ import type { Constitution } from "@/domain/constitution";
 import type { ConstraintBlueprint } from "@/domain/constraint-blueprint";
 import type { Constraint } from "@/domain/constraint";
 import type { ConstraintStatus } from "@/domain/constraint";
+import type { DecisionProject } from "@/domain/decision-project";
 import {
   activateConstitution,
   activateConstraintVersion,
@@ -24,6 +25,7 @@ class WorkspaceDatabase extends Dexie {
   constitutionRules!: EntityTable<ConstitutionRule, "id">;
   constraintBlueprints!: EntityTable<ConstraintBlueprint, "id">;
   constraints!: EntityTable<Constraint, "id">;
+  decisionProjects!: EntityTable<DecisionProject, "id">;
   workspaceMeta!: EntityTable<WorkspaceMeta, "key">;
 
   constructor(name: string) {
@@ -44,6 +46,18 @@ class WorkspaceDatabase extends Dexie {
         "id, blueprintId, constitutionVersionId, parentArticleId, pillar, metricKey",
       constraints:
         "id, constraintId, status, pillar, constitutionVersionId, metricKey, severity, outcomeIfFailed",
+      workspaceMeta: "key",
+    });
+    this.version(3).stores({
+      constitutions:
+        "id, constitutionId, status, [scope+scopeValue], effectiveDate, updatedAt",
+      constitutionRules: "id, ruleId, constitutionVersionId, pillar",
+      constraintBlueprints:
+        "id, blueprintId, constitutionVersionId, parentArticleId, pillar, metricKey",
+      constraints:
+        "id, constraintId, status, pillar, constitutionVersionId, metricKey, severity, outcomeIfFailed",
+      decisionProjects:
+        "id, projectId, status, meetingMode, recommendation, decisionDeadline, updatedAt",
       workspaceMeta: "key",
     });
   }
@@ -176,6 +190,21 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
     });
   }
 
+  async listDecisionProjects(): Promise<DecisionProject[]> {
+    const records = await this.database.decisionProjects.toArray();
+    return records.sort((left, right) =>
+      left.decisionDeadline.localeCompare(right.decisionDeadline),
+    );
+  }
+
+  getDecisionProject(id: string): Promise<DecisionProject | undefined> {
+    return this.database.decisionProjects.get(id);
+  }
+
+  async putDecisionProject(record: DecisionProject): Promise<void> {
+    await this.database.decisionProjects.put(record);
+  }
+
   async seedWorkspaceIfNeeded(
     seedVersion: number,
     workspace: SeedWorkspace,
@@ -188,6 +217,7 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
         this.database.constitutionRules,
         this.database.constraintBlueprints,
         this.database.constraints,
+        this.database.decisionProjects,
       ],
       async () => {
         const current = await this.database.workspaceMeta.get("seedVersion");
@@ -203,6 +233,9 @@ export class DexieWorkspaceRepository implements WorkspaceRepository {
           workspace.constraintBlueprints,
         );
         await this.database.constraints.bulkPut(workspace.constraints);
+        await this.database.decisionProjects.bulkPut(
+          workspace.decisionProjects,
+        );
         await this.database.workspaceMeta.put({
           key: "seedVersion",
           value: seedVersion,

@@ -7,6 +7,8 @@ import { z } from "zod";
 
 import { useRepository } from "@/data/repository-context";
 import { seedConstraints } from "@/data/seed";
+import type { ConstitutionRule } from "@/domain/constitution-rule";
+import type { ConstraintBlueprint } from "@/domain/constraint-blueprint";
 import {
   bprePillars,
   constraintOperators,
@@ -28,6 +30,11 @@ const formSchema = z.object({
   version: z.string().regex(/^\d+\.\d+$/, "Use major.minor"),
   constitutionVersionId: required,
   constitutionRuleId: required,
+  constraintBlueprintId: required,
+  derivationRationale: z
+    .string()
+    .trim()
+    .min(1, "Derivation rationale is required"),
   pillar: z.enum(bprePillars),
   constraintType: z.enum(constraintTypes),
   name: required,
@@ -88,6 +95,8 @@ export function ConstraintFormPage() {
   );
   const navigate = useNavigate();
   const [base, setBase] = useState<Constraint>(seedConstraints[0]);
+  const [articles, setArticles] = useState<ConstitutionRule[]>([]);
+  const [blueprints, setBlueprints] = useState<ConstraintBlueprint[]>([]);
   const [formError, setFormError] = useState("");
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -100,6 +109,32 @@ export function ConstraintFormPage() {
       changeNotes: "",
     }),
   });
+  const selectedArticleId = form.watch("constitutionRuleId");
+  const selectedBlueprintId = form.watch("constraintBlueprintId");
+  const selectedArticle = articles.find(
+    (article) => article.id === selectedArticleId,
+  );
+  const selectedBlueprint = blueprints.find(
+    (blueprint) => blueprint.id === selectedBlueprintId,
+  );
+  const articleBlueprints = blueprints.filter(
+    (blueprint) => blueprint.parentArticleId === selectedArticleId,
+  );
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      repository.listConstitutionRules(),
+      repository.listConstraintBlueprints(),
+    ]).then(([availableArticles, availableBlueprints]) => {
+      if (!active) return;
+      setArticles(availableArticles);
+      setBlueprints(availableBlueprints);
+    });
+    return () => {
+      active = false;
+    };
+  }, [repository]);
 
   useEffect(() => {
     if (!id) return;
@@ -109,6 +144,46 @@ export function ConstraintFormPage() {
       form.reset(toFormValues(record));
     });
   }, [form, id, service]);
+
+  const selectArticle = (articleId: string) => {
+    const article = articles.find((candidate) => candidate.id === articleId);
+    const blueprint = blueprints.find(
+      (candidate) => candidate.parentArticleId === articleId,
+    );
+    form.setValue("constitutionRuleId", articleId, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    if (article) {
+      form.setValue("constitutionVersionId", article.constitutionVersionId);
+      form.setValue("pillar", article.pillar);
+    }
+    if (blueprint) selectBlueprint(blueprint.id);
+  };
+
+  const selectBlueprint = (blueprintId: string) => {
+    const blueprint = blueprints.find(
+      (candidate) => candidate.id === blueprintId,
+    );
+    form.setValue("constraintBlueprintId", blueprintId, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    if (!blueprint) return;
+    form.setValue("constitutionVersionId", blueprint.constitutionVersionId);
+    form.setValue("constitutionRuleId", blueprint.parentArticleId);
+    form.setValue("pillar", blueprint.pillar);
+    form.setValue("constraintType", blueprint.ruleType);
+    form.setValue("metricKey", blueprint.metricKey);
+    if (
+      blueprint.evaluationOutcome === "Revise" ||
+      blueprint.evaluationOutcome === "Escalate" ||
+      blueprint.evaluationOutcome === "Advisory"
+    ) {
+      form.setValue("outcomeIfFailed", blueprint.evaluationOutcome);
+    }
+    form.setValue("escalationRole", blueprint.exceptionAuthority);
+  };
 
   const submit = form.handleSubmit(async (values) => {
     setFormError("");
@@ -155,18 +230,37 @@ export function ConstraintFormPage() {
             <Field label="Version">
               <input {...form.register("version")} />
             </Field>
-            <Field label="Constitution version ID">
-              <input {...form.register("constitutionVersionId")} />
-            </Field>
-            <Field label="Constitution rule ID">
-              <input {...form.register("constitutionRuleId")} />
-            </Field>
-            <Field label="BPR&E pillar">
-              <select {...form.register("pillar")}>
-                {bprePillars.map((value) => (
-                  <option key={value}>{value}</option>
+            <Field label="Constitution Article">
+              <select
+                aria-label="Constitution Article"
+                onChange={(event) => selectArticle(event.target.value)}
+                value={selectedArticleId}
+              >
+                {articles.map((article) => (
+                  <option key={article.id} value={article.id}>
+                    {article.ruleId} — {article.name}
+                  </option>
                 ))}
               </select>
+            </Field>
+            <Field label="Constraint Blueprint">
+              <select
+                aria-label="Constraint Blueprint"
+                onChange={(event) => selectBlueprint(event.target.value)}
+                value={selectedBlueprintId}
+              >
+                {articleBlueprints.map((blueprint) => (
+                  <option key={blueprint.id} value={blueprint.id}>
+                    {blueprint.blueprintId} — {blueprint.controlObjective}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Constitution version ID">
+              <input readOnly {...form.register("constitutionVersionId")} />
+            </Field>
+            <Field label="BPR&E pillar">
+              <input readOnly {...form.register("pillar")} />
             </Field>
             <Field label="Constraint type">
               <select {...form.register("constraintType")}>
@@ -181,6 +275,25 @@ export function ConstraintFormPage() {
             <WideField label="Description / rationale">
               <textarea {...form.register("description")} />
             </WideField>
+            <label className="form-field form-field--wide">
+              <span>Derivation rationale</span>
+              <textarea {...form.register("derivationRationale")} />
+              {form.formState.errors.derivationRationale && (
+                <small className="form-field-error">
+                  {form.formState.errors.derivationRationale.message}
+                </small>
+              )}
+            </label>
+            {selectedArticle && selectedBlueprint && (
+              <div className="linkage-preview form-field--wide">
+                <span className="detail-label">Governed source preview</span>
+                <strong>
+                  {selectedArticle.ruleId} · {selectedBlueprint.blueprintId}
+                </strong>
+                <p>{selectedArticle.principle}</p>
+                <small>{selectedBlueprint.controlObjective}</small>
+              </div>
+            )}
             <Field label="Scope">
               <input {...form.register("scope")} />
             </Field>
@@ -206,7 +319,7 @@ export function ConstraintFormPage() {
               </div>
             </div>
             <Field label="Metric key">
-              <input {...form.register("metricKey")} />
+              <input readOnly {...form.register("metricKey")} />
             </Field>
             <Field label="Data type">
               <select {...form.register("dataType")}>

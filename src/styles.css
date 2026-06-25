@@ -348,6 +348,97 @@ textarea {
   font-size: 0.72rem;
 }
 
+.source-cell {
+  min-width: 280px;
+  max-width: 360px;
+}
+
+.source-article-id,
+.source-principle {
+  display: block;
+}
+
+.source-article-id {
+  color: #a5b4fc;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.source-principle {
+  display: -webkit-box;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.traceability-error {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid rgb(248 113 113 / 35%);
+  border-radius: 0.85rem;
+  background: rgb(127 29 29 / 18%);
+  padding: 1rem;
+  color: #fecaca;
+  font-size: 0.85rem;
+}
+
+.derivation-chain {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.derivation-step,
+.atomic-rule {
+  border: 1px solid rgb(148 163 184 / 16%);
+  border-radius: 0.85rem;
+  background: rgb(15 23 42 / 45%);
+  padding: 1rem;
+}
+
+.derivation-step > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.derivation-step p {
+  margin-top: 0.55rem;
+  color: #e2e8f0;
+  line-height: 1.65;
+}
+
+.derivation-meta {
+  color: #a5b4fc;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.atomic-rule span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.atomic-rule code {
+  display: block;
+  margin-top: 0.65rem;
+  color: #c4b5fd;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  white-space: normal;
+}
+
 .icon-link {
   display: inline-flex;
   color: #94a3b8;
@@ -413,6 +504,42 @@ textarea {
   color: white;
   font-size: 1rem;
   font-weight: 700;
+}
+
+.form-field-error {
+  color: #fca5a5;
+  font-size: 0.75rem;
+}
+
+.linkage-preview {
+  border: 1px solid rgb(129 140 248 / 30%);
+  border-radius: 0.85rem;
+  background: rgb(49 46 129 / 14%);
+  padding: 1rem;
+}
+
+.linkage-preview strong,
+.linkage-preview p,
+.linkage-preview small {
+  display: block;
+}
+
+.linkage-preview strong {
+  margin-top: 0.4rem;
+  color: #c4b5fd;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.linkage-preview p {
+  margin-top: 0.55rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.linkage-preview small {
+  margin-top: 0.45rem;
+  color: #94a3b8;
 }
 
 .form-grid {

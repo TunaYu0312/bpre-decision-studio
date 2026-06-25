@@ -4,7 +4,7 @@ export function constraintsToJson(records: Constraint[]): string {
   return JSON.stringify(
     {
       exportType: "bpre-constraints",
-      schemaVersion: 1,
+      schemaVersion: 2,
       exportedAt: new Date().toISOString(),
       records,
     },
@@ -20,6 +20,22 @@ const csvColumns: Array<{
   { heading: "Constraint ID", value: (record) => record.constraintId },
   { heading: "Version", value: (record) => record.version },
   { heading: "Status", value: (record) => record.status },
+  {
+    heading: "Constitution Version ID",
+    value: (record) => record.constitutionVersionId,
+  },
+  {
+    heading: "Constitution Article ID",
+    value: (record) => record.constitutionRuleId,
+  },
+  {
+    heading: "Constraint Blueprint ID",
+    value: (record) => record.constraintBlueprintId,
+  },
+  {
+    heading: "Derivation Rationale",
+    value: (record) => record.derivationRationale,
+  },
   { heading: "Pillar", value: (record) => record.pillar },
   { heading: "Type", value: (record) => record.constraintType },
   { heading: "Name", value: (record) => record.name },

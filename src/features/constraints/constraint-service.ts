@@ -10,6 +10,8 @@ import {
   DomainError,
 } from "@/domain/lifecycle";
 
+import type { ConstraintTraceability } from "./constraint-traceability";
+
 export interface ConstraintFilters {
   search?: string;
   pillar?: string;
@@ -50,6 +52,34 @@ export function filterConstraints(
       return false;
     }
     return true;
+  });
+}
+
+export function filterConstraintTraceability(
+  records: ConstraintTraceability[],
+  filters: ConstraintFilters,
+): ConstraintTraceability[] {
+  const baseMatches = new Set(
+    filterConstraints(
+      records.map((record) => record.constraint),
+      { ...filters, search: undefined },
+    ).map((record) => record.id),
+  );
+  const search = filters.search?.trim().toLowerCase();
+
+  return records.filter((record) => {
+    if (!baseMatches.has(record.constraint.id)) return false;
+    if (!search) return true;
+
+    return [
+      record.constraint.constraintId,
+      record.constraint.name,
+      record.constraint.metricKey,
+      record.article.ruleId,
+      record.article.principle,
+      record.blueprint.blueprintId,
+      record.blueprint.controlObjective,
+    ].some((value) => value.toLowerCase().includes(search));
   });
 }
 

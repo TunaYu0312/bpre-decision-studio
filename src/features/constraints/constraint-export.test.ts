@@ -10,6 +10,7 @@ describe("Constraint export", () => {
     const parsed = JSON.parse(output);
 
     expect(parsed.exportType).toBe("bpre-constraints");
+    expect(parsed.schemaVersion).toBe(2);
     expect(parsed.records).toHaveLength(2);
   });
 
@@ -23,5 +24,9 @@ describe("Constraint export", () => {
 
     expect(output).toContain('"Discount, ""brand""\nlimit"');
     expect(output.split("\n")[0]).toContain("Constraint ID");
+    expect(output.split("\n")[0]).toContain("Constitution Version ID");
+    expect(output.split("\n")[0]).toContain("Constitution Article ID");
+    expect(output.split("\n")[0]).toContain("Constraint Blueprint ID");
+    expect(output.split("\n")[0]).toContain("Derivation Rationale");
   });
 });

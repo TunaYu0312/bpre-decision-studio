@@ -19,29 +19,61 @@ import {
   downloadTextFile,
 } from "./constraint-export";
 import {
-  ConstraintService,
-  filterConstraints,
+  filterConstraintTraceability,
   type ConstraintFilters,
 } from "./constraint-service";
+import {
+  resolveConstraintTraceability,
+  type ConstraintTraceability,
+} from "./constraint-traceability";
 
 export function ConstraintListPage() {
   const repository = useRepository();
-  const service = useMemo(
-    () => new ConstraintService(repository),
-    [repository],
-  );
-  const [records, setRecords] = useState<Constraint[]>([]);
+  const [records, setRecords] = useState<ConstraintTraceability[]>([]);
+  const [traceabilityError, setTraceabilityError] = useState("");
   const [filters, setFilters] = useState<ConstraintFilters>({});
 
   useEffect(() => {
-    service.list().then(setRecords);
-  }, [service]);
+    let active = true;
+    Promise.all([
+      repository.listConstraints(),
+      repository.listConstitutionRules(),
+      repository.listConstraintBlueprints(),
+    ]).then(([constraints, articles, blueprints]) => {
+      if (!active) return;
+      try {
+        setRecords(
+          constraints.map((constraint) =>
+            resolveConstraintTraceability(
+              constraint,
+              articles,
+              blueprints,
+            ),
+          ),
+        );
+        setTraceabilityError("");
+      } catch (error) {
+        setRecords([]);
+        setTraceabilityError(
+          error instanceof Error
+            ? error.message
+            : "Constraint traceability could not be resolved.",
+        );
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [repository]);
 
   const filtered = useMemo(
-    () => filterConstraints(records, filters),
+    () => filterConstraintTraceability(records, filters),
     [filters, records],
   );
-  const scopes = [...new Set(records.map((record) => record.scope))].sort();
+  const scopes = [
+    ...new Set(records.map((record) => record.constraint.scope)),
+  ].sort();
+  const filteredConstraints = filtered.map((record) => record.constraint);
 
   const updateFilter = (key: keyof ConstraintFilters, value: string) => {
     setFilters((current) => ({ ...current, [key]: value || undefined }));
@@ -62,7 +94,7 @@ export function ConstraintListPage() {
             className="button button--secondary"
             onClick={() =>
               downloadTextFile(
-                constraintsToJson(filtered),
+                constraintsToJson(filteredConstraints),
                 "bpre-constraints.json",
                 "application/json",
               )
@@ -76,7 +108,7 @@ export function ConstraintListPage() {
             className="button button--secondary"
             onClick={() =>
               downloadTextFile(
-                constraintsToCsv(filtered),
+                constraintsToCsv(filteredConstraints),
                 "bpre-constraints.csv",
                 "text/csv;charset=utf-8",
               )
@@ -154,11 +186,19 @@ export function ConstraintListPage() {
         </button>
       </div>
 
+      {traceabilityError && (
+        <div className="traceability-error mt-4" role="alert">
+          <strong>Traceability error</strong>
+          <span>{traceabilityError}</span>
+        </div>
+      )}
+
       <div className="table-shell mt-4">
         <table className="operating-table">
           <thead>
             <tr>
               <th>Constraint</th>
+              <th>Constitution source</th>
               <th>Pillar</th>
               <th>Condition</th>
               <th>Severity</th>
@@ -167,7 +207,7 @@ export function ConstraintListPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((record) => (
+            {filtered.map(({ article, constraint: record }) => (
               <tr key={record.id}>
                 <td>
                   <Link
@@ -178,6 +218,12 @@ export function ConstraintListPage() {
                   </Link>
                   <span className="record-meta">
                     {record.constraintId} · {record.metricKey}
+                  </span>
+                </td>
+                <td className="source-cell">
+                  <span className="source-article-id">{article.ruleId}</span>
+                  <span className="source-principle" title={article.principle}>
+                    {article.principle}
                   </span>
                 </td>
                 <td>
@@ -195,7 +241,7 @@ export function ConstraintListPage() {
             ))}
             {records.length > 0 && filtered.length === 0 && (
               <tr>
-                <td colSpan={6}>No constraints match the current filters.</td>
+                <td colSpan={7}>No constraints match the current filters.</td>
               </tr>
             )}
           </tbody>

@@ -39,6 +39,11 @@ describe("Constraint Library", () => {
         name: "Promotion discount must not exceed 20%",
       }),
     ).toBeVisible();
+    expect(
+      await screen.findAllByText(
+        "Signature-product quality and value perception cannot be compromised for short-term traffic.",
+      ),
+    ).toHaveLength(2);
 
     await user.type(
       screen.getByRole("searchbox", { name: "Search constraints" }),
@@ -55,5 +60,25 @@ describe("Constraint Library", () => {
         name: "Promotion discount must not exceed 20%",
       }),
     ).not.toBeInTheDocument();
+
+    await user.clear(
+      screen.getByRole("searchbox", { name: "Search constraints" }),
+    );
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search constraints" }),
+      "RULE-BR-001",
+    );
+
+    expect(
+      screen.getByRole("link", {
+        name: "Promotion discount must not exceed 20%",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("link", {
+        name: "No standalone deep discount on signature products",
+      }),
+    ).toBeVisible();
+    expect(screen.getByText("2 matching constraints")).toBeVisible();
   });
 });

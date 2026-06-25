@@ -15,6 +15,10 @@ import { useRepository } from "@/data/repository-context";
 import type { Constraint, ConstraintStatus } from "@/domain/constraint";
 
 import { ConstraintService } from "./constraint-service";
+import {
+  resolveConstraintTraceability,
+  type ConstraintTraceability,
+} from "./constraint-traceability";
 
 export function ConstraintDetailPage() {
   const { id = "" } = useParams();
@@ -25,21 +29,62 @@ export function ConstraintDetailPage() {
   );
   const navigate = useNavigate();
   const [record, setRecord] = useState<Constraint>();
+  const [traceability, setTraceability] =
+    useState<ConstraintTraceability>();
+  const [traceabilityError, setTraceabilityError] = useState("");
   const [error, setError] = useState("");
 
   const reload = async () => {
-    setRecord(await service.get(id));
+    const [current, articles, blueprints] = await Promise.all([
+      service.get(id),
+      repository.listConstitutionRules(),
+      repository.listConstraintBlueprints(),
+    ]);
+    setRecord(current);
+    if (!current) return;
+    try {
+      setTraceability(
+        resolveConstraintTraceability(current, articles, blueprints),
+      );
+      setTraceabilityError("");
+    } catch (traceError) {
+      setTraceability(undefined);
+      setTraceabilityError(
+        traceError instanceof Error
+          ? traceError.message
+          : "Constraint traceability could not be resolved.",
+      );
+    }
   };
 
   useEffect(() => {
     let active = true;
-    service.get(id).then((current) => {
-      if (active) setRecord(current);
+    Promise.all([
+      service.get(id),
+      repository.listConstitutionRules(),
+      repository.listConstraintBlueprints(),
+    ]).then(([current, articles, blueprints]) => {
+      if (!active) return;
+      setRecord(current);
+      if (!current) return;
+      try {
+        setTraceability(
+          resolveConstraintTraceability(current, articles, blueprints),
+        );
+        setTraceabilityError("");
+      } catch (traceError) {
+        setTraceability(undefined);
+        setTraceabilityError(
+          traceError instanceof Error
+            ? traceError.message
+            : "Constraint traceability could not be resolved.",
+        );
+      }
     });
     return () => {
       active = false;
     };
-  }, [id, service]);
+  }, [id, repository, service]);
 
   if (!record) return <p className="text-slate-400">Loading Constraint…</p>;
 
@@ -139,18 +184,57 @@ export function ConstraintDetailPage() {
                 </p>
               </div>
               <div>
-                <span className="detail-label">Constitution linkage</span>
-                <p className="mt-2 text-sm text-slate-300">
-                  {record.constitutionVersionId} · {record.constitutionRuleId}
-                </p>
-              </div>
-              <div>
                 <span className="detail-label">Change notes</span>
                 <p className="mt-2 text-sm text-slate-300">
                   {record.changeNotes}
                 </p>
               </div>
             </div>
+          </section>
+
+          <section className="detail-card mt-5">
+            <h2 className="text-lg font-semibold text-white">
+              Derivation chain
+            </h2>
+            {traceability ? (
+              <div className="derivation-chain mt-5">
+                <DerivationStep
+                  label="Decision Constitution Article"
+                  meta={traceability.article.ruleId}
+                  value={traceability.article.principle}
+                />
+                <DerivationStep
+                  label="Constitution version"
+                  value={record.constitutionVersionId}
+                />
+                <DerivationStep
+                  label="BPR&E control objective"
+                  meta={traceability.blueprint.blueprintId}
+                  value={traceability.blueprint.controlObjective}
+                />
+                <DerivationStep
+                  label="Risk to avoid"
+                  value={traceability.blueprint.riskToAvoid}
+                />
+                <DerivationStep
+                  label="Threshold source"
+                  value={traceability.blueprint.thresholdSource}
+                />
+                <DerivationStep
+                  label="Derivation rationale"
+                  value={record.derivationRationale}
+                />
+                <div className="atomic-rule">
+                  <span>Atomic constraint</span>
+                  <code>{formatAtomicRule(record)}</code>
+                </div>
+              </div>
+            ) : (
+              <div className="traceability-error mt-5" role="alert">
+                <strong>Traceability error</strong>
+                <span>{traceabilityError}</span>
+              </div>
+            )}
           </section>
         </div>
 
@@ -245,4 +329,30 @@ function Detail({ label, value }: { label: string; value: string }) {
       <p className="mt-1 text-sm text-slate-200">{value}</p>
     </div>
   );
+}
+
+function DerivationStep({
+  label,
+  meta,
+  value,
+}: {
+  label: string;
+  meta?: string;
+  value: string;
+}) {
+  return (
+    <div className="derivation-step">
+      <div>
+        <span className="detail-label">{label}</span>
+        {meta && <span className="derivation-meta">{meta}</span>}
+      </div>
+      <p>{value}</p>
+    </div>
+  );
+}
+
+function formatAtomicRule(record: Constraint): string {
+  return `IF ${record.scope} THEN ${record.metricKey} ${record.operator} ${formatThreshold(
+    record,
+  )} ELSE ${record.outcomeIfFailed}`;
 }

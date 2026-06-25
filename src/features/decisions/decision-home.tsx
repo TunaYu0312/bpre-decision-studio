@@ -11,6 +11,8 @@ import { Link } from "react-router";
 import { useRepository } from "@/data/repository-context";
 import type { DecisionProject } from "@/domain/decision-project";
 
+import { getUpcomingReviews } from "./decision-home-utils";
+
 export function DecisionHomePage() {
   const repository = useRepository();
   const [projects, setProjects] = useState<DecisionProject[]>([]);
@@ -36,11 +38,7 @@ export function DecisionHomePage() {
       project.recommendation === "Escalate" ||
       project.meetingMode === "Executive Escalation",
   );
-  const upcomingReviews = projects.flatMap((project) =>
-    project.timeline
-      .filter((event) => event.eventType === "Review Due")
-      .map((event) => ({ ...event, project })),
-  );
+  const upcomingReviews = getUpcomingReviews(projects);
 
   return (
     <section className="mx-auto max-w-7xl">

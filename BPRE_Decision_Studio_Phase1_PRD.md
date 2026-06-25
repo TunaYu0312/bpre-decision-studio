@@ -22,18 +22,29 @@ Phase 1 builds the common foundation required by all later decision scenarios:
 
 ```text
 Decision Constitution
-→ Constraint Library
+→ Derived Constraints
 → Decision Card
-→ Constraint Evaluation
-→ Pass / Revise / Escalate
+→ Evaluation Snapshot
+→ Human Decision
 → Action Plan
 → Review
-→ Rule Update Request
 ```
 
-The application must demonstrate how an organization converts strategic priorities into measurable constraints, evaluates a real project against those constraints, assigns accountable owners and KPIs, and preserves a review trail.
+The primary user journey is:
 
-Phase 1 is not a dashboard project. It is a decision workflow product.
+```text
+Decision Agenda
+→ Decision Meeting Workspace
+→ Evidence and Constraint Evaluation
+→ Pass / Revise / Escalate Recommendation
+→ Accountable Human Decision
+→ Action Plan
+→ Review and Learning
+```
+
+The application must demonstrate how an organization converts strategic priorities into measurable constraints, evaluates a real project against those constraints, presents the decision in a meeting-ready workspace, records accountable human judgement, assigns owners and KPIs, and preserves a review trail.
+
+Phase 1 is not a dashboard project or a governance document viewer. It is a structured decision workspace.
 
 ---
 
@@ -82,15 +93,14 @@ Deliver a working, public-facing prototype that can create, manage, evaluate, ap
 
 A user should be able to complete the following end-to-end flow without developer support:
 
-1. Open an active Decision Constitution.
-2. View the linked active constraints.
-3. Create a Decision Card for a business project.
-4. Enter data, assumptions, BPR&E implications, and evidence.
-5. Run an evaluation.
-6. Receive Pass / Revise / Escalate with clear reasons.
-7. Confirm an approval outcome and create an Action Plan.
-8. Record KPI results at review dates.
-9. Create a request to confirm, revise, retire, or add a rule.
+1. Open the operational Home or Decision Agenda and identify decisions requiring judgement.
+2. Open a Decision Meeting Workspace containing the prepared Decision Card, evidence, options, and evaluation.
+3. Review the system recommendation and the reasons for Pass / Revise / Escalate.
+4. Inspect only the constraints and Constitution articles relevant to the current decision.
+5. Resolve open issues and record an accountable human decision with rationale.
+6. Confirm an Action Plan with owner, KPI, review date, and exit rule.
+7. Record KPI results at review dates.
+8. Create a request to confirm, revise, retire, or add a rule when review evidence warrants it.
 
 ---
 
@@ -141,6 +151,31 @@ Phase 1 must create the reusable foundation for those later modules.
 
 ---
 
+## 5.1 Decision-Centric UX Direction
+
+The primary product entry point is the decision agenda, not the Constitution or Constraint Library.
+
+1. **Home is operational.** It answers what requires judgement now, which decisions are escalated, why they are escalated, the recommended action, and expected North Star / Economic Box impact.
+2. **Decision Meeting Workspace is the core screen.** It presents the decision snapshot, customer and strategic context, evidence, options, recommendation, relevant rule checks, final decision, and action plan in one meeting-ready narrative.
+3. **Meeting input is intentionally narrow.** Prepared evidence, assumptions, options, evaluation results, and rule references are read-only during the meeting. Meeting participants record resolutions, final judgement, rationale, accountability, review dates, and exceptions.
+4. **Governance is progressively disclosed.** The full Constitution and Constraint Library remain available under Rules & Governance, but a decision workspace shows only the articles and constraints relevant to that decision.
+5. **The system recommendation does not approve the project.** Pass / Revise / Escalate is a structured system assessment. The final outcome is an explicit human decision and must be auditable.
+6. **Four meeting modes guide attention.** Fast Track, Revision Review, Executive Escalation, and Incomplete Decision determine the meeting emphasis without changing the underlying governance logic.
+
+The intended product hierarchy is:
+
+```text
+Decision Constitution
+→ Derived Constraints
+→ Decision Card
+→ Evaluation
+→ Human Decision
+→ Action Plan
+→ Review
+```
+
+---
+
 ## 6. Target Users and Responsibilities
 
 | Role | Phase 1 responsibility | System interaction |
@@ -161,14 +196,17 @@ Phase 1 must create the reusable foundation for those later modules.
 
 ### Main navigation
 
-1. **Overview**
-2. **Decision Constitutions**
-3. **Constraint Library**
-4. **Decision Projects**
-5. **Evaluation Queue**
-6. **Action & Review**
-7. **Demo Cases**
-8. **Export / Settings**
+1. **Home**
+2. **Decision Agenda**
+3. **Decision Workspace**
+4. **Review & Follow-up**
+5. **Rules & Governance**
+   - Decision Constitutions
+   - Constraint Library
+   - Rule Derivation
+   - Version History
+
+Home and Decision Agenda are the default operational entry points. Rules & Governance is a supporting layer rather than the primary user journey.
 
 ### Key object relationships
 

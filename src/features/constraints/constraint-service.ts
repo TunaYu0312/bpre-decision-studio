@@ -10,7 +10,10 @@ import {
   DomainError,
 } from "@/domain/lifecycle";
 
-import type { ConstraintTraceability } from "./constraint-traceability";
+import {
+  resolveConstraintTraceability,
+  type ConstraintTraceability,
+} from "./constraint-traceability";
 
 export interface ConstraintFilters {
   search?: string;
@@ -118,6 +121,7 @@ export class ConstraintService {
       createdAt: now,
       updatedAt: now,
     });
+    await this.assertTraceability(record);
     await this.repository.putConstraint(record);
     return record;
   }
@@ -135,6 +139,7 @@ export class ConstraintService {
       createdAt: current.createdAt,
       updatedAt: this.dependencies.now(),
     });
+    await this.assertTraceability(updated);
     await this.repository.putConstraint(updated);
     return updated;
   }
@@ -161,5 +166,13 @@ export class ConstraintService {
       nextStatus,
       this.dependencies.now(),
     );
+  }
+
+  private async assertTraceability(record: Constraint): Promise<void> {
+    const [articles, blueprints] = await Promise.all([
+      this.repository.listConstitutionRules(),
+      this.repository.listConstraintBlueprints(),
+    ]);
+    resolveConstraintTraceability(record, articles, blueprints);
   }
 }

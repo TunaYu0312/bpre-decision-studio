@@ -54,7 +54,8 @@ describe("Constraint filtering", () => {
 
 describe("ConstraintService", () => {
   it("creates and updates only Draft Constraints", async () => {
-    const { service } = setup();
+    const { repository, service } = setup();
+    await loadSeedData(repository);
     const draft = await service.createDraft({
       ...seedConstraints[0],
       constraintId: "BR-NEW-001",
@@ -71,6 +72,19 @@ describe("ConstraintService", () => {
       status: "Draft",
       name: "Updated draft rule",
     });
+  });
+
+  it("rejects a Draft whose atomic metric does not match its blueprint", async () => {
+    const { repository, service } = setup();
+    await loadSeedData(repository);
+
+    await expect(
+      service.createDraft({
+        ...seedConstraints[0],
+        constraintId: "BR-NEW-INVALID",
+        metricKey: "unrelated_metric",
+      }),
+    ).rejects.toThrow("Blueprint metric");
   });
 
   it("clones an Active Constraint into the next Draft version", async () => {
@@ -106,7 +120,8 @@ describe("ConstraintService", () => {
   });
 
   it("activates, suspends, reactivates, and retires through valid transitions", async () => {
-    const { service } = setup();
+    const { repository, service } = setup();
+    await loadSeedData(repository);
     const draft = await service.createDraft({
       ...seedConstraints[0],
       constraintId: "BR-NEW-002",

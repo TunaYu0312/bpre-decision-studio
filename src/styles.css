@@ -454,6 +454,232 @@ textarea {
   gap: 1rem;
 }
 
+.decision-tab-workspace {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.decision-tabs {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  border: 1px solid rgb(255 255 255 / 0.09);
+  border-radius: 1rem;
+  background: rgb(15 23 42 / 55%);
+  padding: 0.4rem;
+}
+
+.decision-tab {
+  display: inline-flex;
+  flex: 1 0 max-content;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  padding: 0.72rem 0.9rem;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.decision-tab[aria-selected="true"] {
+  background: rgb(252 211 77 / 12%);
+  color: #fcd34d;
+}
+
+.decision-tab span {
+  display: inline-flex;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgb(248 113 113 / 16%);
+  color: #fca5a5;
+  font-size: 0.65rem;
+}
+
+.decision-tab-panel {
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1.15rem;
+  background: #0b1424;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.decision-brief,
+.meeting-panel-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.brief-hero {
+  display: grid;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.brief-hero h2,
+.panel-heading h2 {
+  margin-top: 0.4rem;
+  color: white;
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  font-weight: 720;
+  letter-spacing: -0.02em;
+}
+
+.brief-hero p:not(.eyebrow) {
+  margin-top: 0.65rem;
+  max-width: 760px;
+  color: #cbd5e1;
+  line-height: 1.65;
+}
+
+.brief-request-card,
+.brief-card,
+.review-grid article,
+.rule-attention-card,
+.follow-up-summary {
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 0.9rem;
+  background: rgb(15 23 42 / 55%);
+  padding: 1rem;
+}
+
+.brief-request-card {
+  display: grid;
+  align-content: center;
+  border-color: rgb(252 211 77 / 24%);
+  background: rgb(120 53 15 / 13%);
+}
+
+.brief-request-card span,
+.brief-card > span,
+.review-grid article > span,
+.exception-memo > span,
+.rule-chain span {
+  color: #64748b;
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brief-request-card strong,
+.brief-card > strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: #f8fafc;
+  line-height: 1.5;
+}
+
+.brief-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.brief-card p {
+  margin-top: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.brief-reason-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  padding-left: 1.1rem;
+  color: #dbe4f0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.brief-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.9rem;
+}
+
+.panel-heading {
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  padding-bottom: 0.9rem;
+}
+
+.review-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.review-grid ul {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.review-grid li {
+  display: grid;
+  gap: 0.25rem;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+}
+
+.review-grid time {
+  color: #fcd34d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+}
+
+.review-grid p {
+  margin-top: 0.75rem;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.rule-attention-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.rule-attention-card {
+  display: grid;
+  gap: 1rem;
+  border-color: rgb(248 113 113 / 22%);
+}
+
+.rule-chain {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.rule-chain p,
+.exception-memo p {
+  margin-top: 0.25rem;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.exception-memo {
+  border-left: 2px solid rgb(252 211 77 / 45%);
+  padding-left: 0.85rem;
+}
+
+.exception-memo strong {
+  display: block;
+  margin-top: 0.3rem;
+  color: #fcd34d;
+}
+
+.follow-up-summary {
+  display: grid;
+  gap: 1rem;
+}
+
 .decision-discussion {
   display: grid;
   gap: 1rem;
@@ -1015,6 +1241,18 @@ progress::-moz-progress-bar { background: #fbbf24; }
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .brief-hero {
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 0.85fr);
+  }
+
+  .brief-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brief-card--wide {
+    grid-column: 1 / -1;
+  }
+
   .narrative-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1025,6 +1263,11 @@ progress::-moz-progress-bar { background: #fbbf24; }
 
   .tradeoff-banner {
     grid-template-columns: 1fr auto 1.2fr;
+  }
+
+  .review-grid,
+  .follow-up-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1114,6 +1357,11 @@ progress::-moz-progress-bar { background: #fbbf24; }
 
 .button--primary:hover {
   background: #fde68a;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
 }
 
 .button--secondary {

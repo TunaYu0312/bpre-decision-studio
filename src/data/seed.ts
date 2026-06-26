@@ -21,7 +21,7 @@ import {
 
 import type { WorkspaceRepository } from "./repository";
 
-const SEED_VERSION = 3;
+export const SEED_VERSION = 4;
 const CREATED_AT = "2026-01-01T00:00:00.000Z";
 const CONSTITUTION_ID = "constitution-profit-repair-2026-v1";
 
@@ -566,6 +566,7 @@ export const seedDecisionProject: DecisionProject = decisionProjectSchema.parse(
     "Morning traffic is below target in selected trade areas. The team proposes a bundle offer to improve customer conversion during breakfast hours.",
   businessObjective:
     "Increase incremental morning traffic and gross profit dollars while maintaining non-negative Store-level EBITDA.",
+  budget: "Pilot investment envelope: $22K gross discount and enablement cost",
   requestedDecision: "Approve pilot / Return for revision / Escalate to CEO",
   owner: "Marketing Director",
   coOwner: "Operations Manager",

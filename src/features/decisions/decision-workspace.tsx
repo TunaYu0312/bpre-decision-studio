@@ -11,11 +11,7 @@ import type { FinalDecisionOutcome } from "@/domain/decision-project";
 
 import { ConstraintSourceDrawer } from "./constraint-source-drawer";
 import { DecisionRail } from "./decision-rail";
-import { DecisionSections } from "./decision-sections";
-import {
-  DecisionRecordSummary,
-  FinalDecisionPanel,
-} from "./final-decision-panel";
+import { DecisionTabs } from "./decision-tabs";
 import { DecisionService } from "./decision-service";
 
 export function DecisionWorkspacePage() {
@@ -143,33 +139,24 @@ export function DecisionWorkspacePage() {
       </div>
 
       <div className="decision-workspace-grid">
-        <DecisionSections
+        <DecisionTabs
           articles={relevantArticles}
           constraints={appliedConstraints}
+          onAction={(action) => setSelectedAction(action)}
           onConstraintSelect={setSelectedConstraintId}
+          onRecorded={(recorded) => {
+            setProject(recorded);
+            setSelectedAction(undefined);
+          }}
           project={project}
+          selectedAction={selectedAction}
+          service={service}
         />
         <DecisionRail
           onAction={(action) => setSelectedAction(action as FinalDecisionOutcome)}
           project={project}
         />
       </div>
-
-      {project.decisionRecord ? (
-        <DecisionRecordSummary project={project} />
-      ) : (
-        selectedAction && (
-          <FinalDecisionPanel
-            initialOutcome={selectedAction}
-            onRecorded={(recorded) => {
-              setProject(recorded);
-              setSelectedAction(undefined);
-            }}
-            project={project}
-            service={service}
-          />
-        )
-      )}
 
       {selectedConstraint &&
         selectedEvaluation &&

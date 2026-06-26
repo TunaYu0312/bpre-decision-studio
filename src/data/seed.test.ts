@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { bprePillars } from "@/domain/constraint";
 
 import { DexieWorkspaceRepository } from "./dexie-repository";
-import { loadSeedData } from "./seed";
+import { loadSeedData, SEED_VERSION } from "./seed";
 
 const repositories: DexieWorkspaceRepository[] = [];
 
@@ -61,6 +61,8 @@ describe("Dexie workspace repository", () => {
     expect(second.blueprints).toHaveLength(second.constraints.length);
     expect(second.projects).toHaveLength(1);
     expect(second.projects[0]).toMatchObject({
+      budget:
+        "Pilot investment envelope: $22K gross discount and enablement cost",
       projectId: "DP-2026-001",
       meetingMode: "Revision Review",
       recommendation: "Revise",
@@ -72,5 +74,9 @@ describe("Dexie workspace repository", () => {
     expect(second.constraints.every((item) => item.status === "Active")).toBe(
       true,
     );
+  });
+
+  it("uses seed version 4 so existing local demo workspaces refresh for the tab flow", () => {
+    expect(SEED_VERSION).toBe(4);
   });
 });

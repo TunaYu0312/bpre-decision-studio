@@ -190,6 +190,7 @@ export const decisionProjectSchema = z.object({
   decisionStatement: nonEmptyStringSchema,
   whyNow: nonEmptyStringSchema,
   businessObjective: nonEmptyStringSchema,
+  budget: nonEmptyStringSchema,
   requestedDecision: nonEmptyStringSchema,
   owner: nonEmptyStringSchema,
   coOwner: nonEmptyStringSchema,

@@ -1,14 +1,26 @@
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 
-import type { DecisionProject } from "@/domain/decision-project";
+import type {
+  DecisionProject,
+  FinalDecisionOutcome,
+} from "@/domain/decision-project";
 
 export function DecisionRail({
   onAction,
   project,
 }: {
-  onAction: (action: string) => void;
+  onAction: (action: FinalDecisionOutcome) => void;
   project: DecisionProject;
 }) {
+  const assessment = recommendationDisplay(project.recommendation);
+  const approvalBlocked = project.meetingMode === "Incomplete Decision";
+  const primaryAction: FinalDecisionOutcome =
+    project.meetingMode === "Executive Escalation"
+      ? "Approve Exception"
+      : project.meetingMode === "Fast Track"
+        ? "Approve"
+        : "Revise";
+
   return (
     <aside className="decision-rail" aria-label="Meeting decision summary">
       <section className="rail-card rail-card--assessment" aria-live="polite">
@@ -17,7 +29,7 @@ export function DecisionRail({
           <AlertTriangle aria-hidden="true" size={20} />
           <div>
             <span>Recommendation</span>
-            <strong>REVISION REQUIRED</strong>
+            <strong>{assessment}</strong>
           </div>
         </div>
         <p className="rail-reason">{project.evaluationSnapshot.reason}</p>
@@ -54,13 +66,15 @@ export function DecisionRail({
         <div className="mt-4 grid gap-2">
           <button
             className="button button--primary w-full"
-            onClick={() => onAction("Revise")}
+            disabled={approvalBlocked}
+            onClick={() => onAction(primaryAction)}
             type="button"
           >
-            Return for Revision
+            {primaryActionLabel(primaryAction)}
           </button>
           <button
             className="button button--secondary w-full"
+            disabled={approvalBlocked}
             onClick={() => onAction("Approve Exception")}
             type="button"
           >
@@ -88,4 +102,21 @@ export function DecisionRail({
       </section>
     </aside>
   );
+}
+
+function recommendationDisplay(
+  recommendation: DecisionProject["recommendation"],
+): string {
+  if (recommendation === "Pass") return "APPROVE";
+  if (recommendation === "Escalate") return "EXECUTIVE ESCALATION";
+  if (recommendation === "Incomplete") return "INCOMPLETE";
+  return "REVISION REQUIRED";
+}
+
+function primaryActionLabel(action: FinalDecisionOutcome): string {
+  if (action === "Approve") return "Approve Decision";
+  if (action === "Approve Exception") return "Approve Exception";
+  if (action === "Escalate") return "Escalate to CEO";
+  if (action === "Reject") return "Reject Proposal";
+  return "Return for Revision";
 }

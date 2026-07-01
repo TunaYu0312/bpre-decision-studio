@@ -117,7 +117,7 @@ export function DecisionHomePage() {
                 <Link
                   aria-label="Open Breakfast Combo Pilot"
                   className="button button--primary"
-                  to={`/decisions/${project.id}`}
+                  to={`/decisions/${project.id}/meeting`}
                 >
                   Open meeting
                 </Link>

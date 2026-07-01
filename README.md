@@ -19,7 +19,10 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173/home` or
+Open `http://localhost:5173/home` or the executive meeting view at
+`http://localhost:5173/decisions/decision-breakfast-combo-pilot/meeting`.
+
+The detailed owner workbench remains available at
 `http://localhost:5173/decisions/decision-breakfast-combo-pilot`.
 
 ## Quality checks
@@ -40,6 +43,8 @@ No private API key is required. Phase 1 data remains in browser IndexedDB.
 ## Implemented modules
 
 - Public demo workspace and decision-meeting navigation
+- Full-screen five-page Meeting Mode for executive decision meetings
+- Separate Workspace Mode for owner / data / execution preparation
 - Company Decision Operating Profile attached to the Decision Project
 - Promotion Decision Template attached to the meeting workspace
 - Versioned Decision Constitutions

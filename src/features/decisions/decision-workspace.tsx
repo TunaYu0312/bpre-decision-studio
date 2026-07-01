@@ -95,6 +95,12 @@ export function DecisionWorkspacePage() {
           </div>
         </div>
         <div className="meeting-command-actions">
+          <nav aria-label="Mode switch" className="mode-switch mode-switch--compact">
+            <Link aria-current="page" to={`/decisions/${project.id}`}>
+              Workspace Mode
+            </Link>
+            <Link to={`/decisions/${project.id}/meeting`}>Meeting Mode</Link>
+          </nav>
           <button className="button button--secondary" type="button">
             Open Evidence Pack
           </button>

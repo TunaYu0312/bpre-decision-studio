@@ -90,7 +90,7 @@ Examples:
 - A local team proposes an investment without a common ROI or payback threshold.
 - A CEO is asked to decide without a structured view of red-line violations, trade-offs, or exit conditions.
 
-BPR&E Decision Studio makes those boundaries visible and operational.
+BPR&E Decision Meeting Studio makes those boundaries visible and operational.
 
 ---
 
@@ -257,6 +257,56 @@ CEO Escalation: Brand red lines and negative EBITDA exceptions
 ```
 
 This makes the same Breakfast Combo Pilot produce different recommendations under different strategic stages without claiming BPR&E is a universal fixed answer.
+
+---
+
+## 5.3 Separate Meeting Mode from Workspace Mode
+
+The product must not mix two different interfaces into one dense page.
+
+### Workspace Mode
+
+Workspace Mode is for:
+
+- Decision Owner
+- Data Owner
+- Execution Owner
+- Decision System Team
+
+It may contain detailed evidence, editable project fields, complete rule checks, BPR&E assessment, Constitution references, action-plan preparation, and review notes. It is the preparation and audit workbench.
+
+### Meeting Mode
+
+Meeting Mode is for CEO, leadership committee, and cross-functional decision meetings. It must be full-screen, presentation-first, and limited to a five-page sequence:
+
+```text
+Decision Brief
+-> Data Facts
+-> Options & Trade-offs
+-> Risks / Rules / Exceptions
+-> Final Decision & Commitments
+```
+
+Design rules:
+
+1. One key question per page.
+2. Maximum three major messages per page.
+3. Maximum six key metrics per page.
+4. No dense tables by default.
+5. No full BPR&E grid by default.
+6. No full Constraint Library or Constitution text by default.
+7. No persistent right-side decision rail.
+8. No editable forms during meeting presentation.
+9. Detailed evidence, rule logic, Constitution references, and audit data must sit behind progressive disclosure.
+10. Final decision actions appear only on the final commitments page.
+
+The default order is:
+
+```text
+Recommendation -> Facts -> Options -> Risks -> Commitments
+```
+
+This preserves the detailed workbench while giving executive meeting users a focused presentation flow.
 
 ---
 

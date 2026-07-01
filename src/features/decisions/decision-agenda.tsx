@@ -43,7 +43,7 @@ export function DecisionAgendaPage() {
               <th>Owner</th>
               <th>North Star</th>
               <th>Deadline</th>
-              <th>Workspace</th>
+              <th>Meeting</th>
             </tr>
           </thead>
           <tbody>
@@ -68,9 +68,9 @@ export function DecisionAgendaPage() {
                 <td>
                   <Link
                     className="text-button"
-                    to={`/decisions/${project.id}`}
+                    to={`/decisions/${project.id}/meeting`}
                   >
-                    Open
+                    Open meeting
                     <ArrowRight aria-hidden="true" size={14} />
                   </Link>
                 </td>

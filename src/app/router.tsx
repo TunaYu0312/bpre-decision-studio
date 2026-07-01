@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 
 import { DecisionAgendaPage } from "@/features/decisions/decision-agenda";
 import { DecisionHomePage } from "@/features/decisions/decision-home";
+import { DecisionMeetingModePage } from "@/features/decisions/decision-meeting-mode";
 import { DecisionWorkspacePage } from "@/features/decisions/decision-workspace";
 import { ReviewFollowUpPage } from "@/features/decisions/review-follow-up";
 import { ConstitutionDetailPage } from "@/features/constitutions/constitution-detail";
@@ -17,6 +18,10 @@ import { AppShell } from "./app-shell";
 export function AppRoutes() {
   return (
     <Routes>
+      <Route
+        element={<DecisionMeetingModePage />}
+        path="/decisions/:id/meeting"
+      />
       <Route element={<AppShell />}>
         <Route element={<Navigate replace to="/home" />} index />
         <Route element={<DecisionHomePage />} path="/home" />

@@ -45,7 +45,7 @@ describe("decision workspace accessibility", () => {
       screen.getByRole("link", { name: /Open Breakfast Combo Pilot/i }),
     ).toHaveAttribute(
       "href",
-      "/decisions/decision-breakfast-combo-pilot",
+      "/decisions/decision-breakfast-combo-pilot/meeting",
     );
   });
 });

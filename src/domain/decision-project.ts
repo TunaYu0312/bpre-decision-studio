@@ -131,6 +131,7 @@ export const timelineEventSchema = z.object({
 export const decisionCommitmentsSchema = z.object({
   owner: nonEmptyStringSchema,
   coOwner: nonEmptyStringSchema,
+  dataOwner: nonEmptyStringSchema,
   approver: nonEmptyStringSchema,
   primaryNorthStar: nonEmptyStringSchema,
   supportingKpis: z.array(nonEmptyStringSchema).min(1),

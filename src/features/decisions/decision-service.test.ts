@@ -20,6 +20,7 @@ const validInput: RecordDecisionInput = {
   commitments: {
     owner: "Marketing Director",
     coOwner: "Operations Manager",
+    dataOwner: "Data Team",
     approver: "CEO",
     primaryNorthStar: "Store-level EBITDA",
     supportingKpis: ["Morning traffic", "Gross profit dollars", "Wait time"],

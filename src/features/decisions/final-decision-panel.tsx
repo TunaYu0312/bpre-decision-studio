@@ -29,6 +29,7 @@ const finalDecisionFormSchema = z.object({
   decisionDate: required,
   owner: required,
   coOwner: required,
+  dataOwner: required,
   approver: required,
   primaryNorthStar: required,
   supportingKpis: required,
@@ -69,6 +70,7 @@ export function FinalDecisionPanel({
       decisionDate: project.meetingDate,
       owner: project.owner,
       coOwner: project.coOwner,
+      dataOwner: "Data Team",
       approver: project.approver,
       primaryNorthStar: project.primaryNorthStar,
       supportingKpis: project.supportingKpis.join("\n"),
@@ -97,6 +99,7 @@ export function FinalDecisionPanel({
         commitments: {
           owner: values.owner,
           coOwner: values.coOwner,
+          dataOwner: values.dataOwner,
           approver: values.approver,
           primaryNorthStar: values.primaryNorthStar,
           supportingKpis: splitLines(values.supportingKpis),
@@ -166,11 +169,35 @@ export function FinalDecisionPanel({
               </div>
             </div>
           )}
+          <div className="form-field form-field--wide">
+            <span>Ownership Model</span>
+            <div className="ownership-grid">
+              <div className="narrative-item">
+                <span>Decision Owner</span>
+                <p>{project.owner}</p>
+              </div>
+              <div className="narrative-item">
+                <span>Execution Owner</span>
+                <p>{project.coOwner}</p>
+              </div>
+              <div className="narrative-item">
+                <span>Data Owner</span>
+                <p>Data Team</p>
+              </div>
+              <div className="narrative-item">
+                <span>Approver</span>
+                <p>{project.approver}</p>
+              </div>
+            </div>
+          </div>
           <Field label="Decision Owner">
             <input {...form.register("owner")} />
           </Field>
           <Field label="Co-owner">
             <input {...form.register("coOwner")} />
+          </Field>
+          <Field label="Data Owner">
+            <input {...form.register("dataOwner")} />
           </Field>
           <Field label="Approver">
             <input {...form.register("approver")} />
@@ -240,6 +267,10 @@ export function DecisionRecordSummary({
             <Summary label="Outcome" value={record.outcome} />
             <Summary label="Decision Maker" value={record.decisionMaker} />
             <Summary label="Decision Rationale" value={record.rationale} />
+            <Summary label="Decision Owner" value={record.commitments.owner} />
+            <Summary label="Execution Owner" value={record.commitments.coOwner} />
+            <Summary label="Data Owner" value={record.commitments.dataOwner} />
+            <Summary label="Approver" value={record.commitments.approver} />
             <Summary
               label="Primary North Star"
               value={record.commitments.primaryNorthStar}

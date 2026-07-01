@@ -21,7 +21,7 @@ import {
 } from "./final-decision-panel";
 import type { DecisionService } from "./decision-service";
 
-type DecisionTabId = "brief" | "card" | "evidence" | "rules" | "follow-up";
+type DecisionTabId = "project" | "facts" | "decision" | "execution";
 
 interface DecisionTabsProps {
   articles: ConstitutionRule[];
@@ -35,11 +35,10 @@ interface DecisionTabsProps {
 }
 
 const tabs: Array<{ id: DecisionTabId; label: string }> = [
-  { id: "brief", label: "Decision Brief" },
-  { id: "card", label: "Decision Card" },
-  { id: "evidence", label: "Evidence & Options" },
-  { id: "rules", label: "Rules & Exceptions" },
-  { id: "follow-up", label: "Decision & Follow-up" },
+  { id: "project", label: "Decision Project" },
+  { id: "facts", label: "Data Facts" },
+  { id: "decision", label: "Decision" },
+  { id: "execution", label: "Execution & Review" },
 ];
 
 export function DecisionTabs({
@@ -52,7 +51,7 @@ export function DecisionTabs({
   selectedAction,
   service,
 }: DecisionTabsProps) {
-  const [activeTab, setActiveTab] = useState<DecisionTabId>("brief");
+  const [activeTab, setActiveTab] = useState<DecisionTabId>("project");
   const counts = useEvaluationCounts(project);
   const rulesBadge = counts.escalate + counts.revise + counts.missing;
 
@@ -71,8 +70,8 @@ export function DecisionTabs({
             type="button"
           >
             {tab.label}
-            {tab.id === "rules" && rulesBadge > 0 && (
-              <span aria-label={`${rulesBadge} rule items need attention`}>
+            {tab.id === "decision" && rulesBadge > 0 && (
+              <span aria-hidden="true">
                 {rulesBadge}
               </span>
             )}
@@ -86,22 +85,20 @@ export function DecisionTabs({
         id={`decision-tab-panel-${activeTab}`}
         role="tabpanel"
       >
-        {activeTab === "brief" && (
-          <DecisionBrief onAction={onAction} project={project} />
-        )}
-        {activeTab === "card" && <DecisionCard project={project} />}
-        {activeTab === "evidence" && <EvidenceAndOptions project={project} />}
-        {activeTab === "rules" && (
-          <RulesAndExceptions
+        {activeTab === "project" && <DecisionProjectCard project={project} />}
+        {activeTab === "facts" && <DataFactsCard project={project} />}
+        {activeTab === "decision" && (
+          <DecisionCard
             articles={articles}
             constraints={constraints}
             counts={counts}
+            onAction={onAction}
             onConstraintSelect={onConstraintSelect}
             project={project}
           />
         )}
-        {activeTab === "follow-up" && (
-          <DecisionFollowUp
+        {activeTab === "execution" && (
+          <ExecutionReviewCard
             onRecorded={onRecorded}
             project={project}
             selectedAction={selectedAction}
@@ -113,34 +110,212 @@ export function DecisionTabs({
   );
 }
 
-function DecisionBrief({
+function DecisionProjectCard({ project }: { project: DecisionProject }) {
+  return (
+    <section className="meeting-panel-stack">
+      <PanelHeading
+        eyebrow="Decision Project Card"
+        title="What are we deciding and why now?"
+      />
+      <div className="decision-project-hero">
+        <NarrativeItem label="Decision Project Name" value={project.title} />
+        <NarrativeItem label="Decision ID" value={project.projectId} />
+        <NarrativeItem label="Decision Type" value={project.decisionType} />
+        <NarrativeItem label="Decision Priority / Level" value={project.decisionLevel} />
+        <NarrativeItem label="Meeting Date" value={project.meetingDate} />
+        <NarrativeItem label="Decision Deadline" value={project.decisionDeadline} />
+      </div>
+      <div className="narrative-grid">
+        <NarrativeItem label="Background" value={project.subtitle} />
+        <NarrativeItem label="Why Now" value={project.whyNow} />
+        <NarrativeItem label="Strategic Stage" value={project.strategicStage} />
+        <NarrativeItem label="Business Objective" value={project.businessObjective} />
+        <NarrativeItem
+          label="Target Customer"
+          value={project.targetCustomers.join(" and ")}
+        />
+        <NarrativeItem label="Customer Journey Moment" value={project.journeyMoment} />
+        <NarrativeItem
+          label="Scope"
+          value={`${project.decisionStatement} ${project.budget}`}
+        />
+        <NarrativeItem label="Decision Request" value={project.decisionRequest} />
+        <NarrativeItem label="Decision Owner" value={project.owner} />
+        <NarrativeItem label="Co-owner" value={project.coOwner} />
+        <NarrativeItem label="Approver" value={project.approver} />
+      </div>
+    </section>
+  );
+}
+
+function DataFactsCard({ project }: { project: DecisionProject }) {
+  return (
+    <section className="meeting-panel-stack">
+      <PanelHeading
+        eyebrow="Data Facts Card"
+        title="What do we know, estimate, and still need to validate?"
+      />
+      <div className="evidence-grid">
+        {project.evidence.map((evidence) => (
+          <article className="evidence-card" key={evidence.id}>
+            <div>
+              <span>{evidence.name}</span>
+              <EvidenceQuality quality={evidence.quality} />
+            </div>
+            <strong>{evidence.displayValue}</strong>
+          </article>
+        ))}
+      </div>
+      <details className="meeting-disclosure">
+        <summary>View Data Sources and Assumptions</summary>
+        <div className="source-grid">
+          {project.evidence.map((evidence) => (
+            <div key={evidence.id}>
+              <strong>{evidence.name}</strong>
+              <span>{evidence.source}</span>
+              <span>{evidence.period}</span>
+              <span>{evidence.calculationNote}</span>
+              <span>
+                Owner: {evidence.owner} · Confidence: {evidence.confidence}
+              </span>
+            </div>
+          ))}
+        </div>
+      </details>
+    </section>
+  );
+}
+
+function DecisionCard({
+  articles,
+  constraints,
+  counts,
   onAction,
+  onConstraintSelect,
   project,
 }: {
+  articles: ConstitutionRule[];
+  constraints: Constraint[];
+  counts: ReturnType<typeof useEvaluationCounts>;
   onAction: (action: FinalDecisionOutcome) => void;
+  onConstraintSelect: (id: string) => void;
   project: DecisionProject;
 }) {
   const recommendedOption = project.options.find((option) => option.recommended);
   const reasons = getKeyReasons(project);
-  const recommendationLabel = recommendationDisplay(project.recommendation);
 
   return (
-    <section className="decision-brief">
-      <div className="brief-hero">
+    <section className="meeting-panel-stack">
+      <PanelHeading
+        eyebrow="Decision Card"
+        title="Options, trade-offs, risks, rules, and recommendation"
+      />
+      <div className="tradeoff-banner">
         <div>
-          <p className="eyebrow">Recommendation first</p>
-          <h2>{recommendationLabel}</h2>
-          <p>{project.evaluationSnapshot.reason}</p>
+          <span>Core Strategic Conflict</span>
+          <strong>{project.coreTradeOff.upside}</strong>
         </div>
-        <div className="brief-request-card">
-          <span>Decision Request</span>
-          <strong>{project.decisionRequest}</strong>
-        </div>
+        <span className="tradeoff-versus">vs.</span>
+        <strong>{project.coreTradeOff.downside}</strong>
       </div>
+      <OptionsComparison project={project} />
+      <BpreAssessment project={project} />
+      <RecommendationPanel
+        onAction={onAction}
+        project={project}
+        reasons={reasons}
+        recommendedOption={recommendedOption}
+      />
+      <RulesAndExceptions
+        articles={articles}
+        constraints={constraints}
+        counts={counts}
+        onConstraintSelect={onConstraintSelect}
+        project={project}
+      />
+    </section>
+  );
+}
 
+function OptionsComparison({ project }: { project: DecisionProject }) {
+  return (
+    <section className="decision-card-section">
+      <h3>Options Comparison</h3>
+      <div className="table-shell">
+        <table className="operating-table option-table">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Description</th>
+              <th>Main Benefit</th>
+              <th>Main Cost / Risk</th>
+              <th>Economic Impact</th>
+              <th>Recommendation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {project.options.map((option) => (
+              <tr className={option.recommended ? "recommended-row" : ""} key={option.id}>
+                <td>
+                  <strong>{option.label}</strong>
+                  {option.recommended && (
+                    <span className="recommended-label">Recommended Option</span>
+                  )}
+                </td>
+                <td>{option.description}</td>
+                <td>{option.customerValue}</td>
+                <td>{option.constraintStatus}</td>
+                <td>{option.economicImpact}</td>
+                <td>{option.recommendation}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function BpreAssessment({ project }: { project: DecisionProject }) {
+  return (
+    <section className="decision-card-section">
+      <h3>BPR&E Assessment</h3>
+      <div className="impact-grid">
+        {project.impacts.map((impact) => (
+          <article className={`impact-card impact-card--${slug(impact.status)}`} key={impact.pillar}>
+            <div>
+              <strong>{impact.pillar}</strong>
+              <span>{impact.status}</span>
+            </div>
+            <p>{impact.summary}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function RecommendationPanel({
+  onAction,
+  project,
+  reasons,
+  recommendedOption,
+}: {
+  onAction: (action: FinalDecisionOutcome) => void;
+  project: DecisionProject;
+  reasons: string[];
+  recommendedOption: DecisionProject["options"][number] | undefined;
+}) {
+  return (
+    <section className="decision-card-section recommendation-panel">
+      <div>
+        <p className="eyebrow">Recommendation</p>
+        <h2>{recommendationDisplay(project.recommendation)}</h2>
+        <p>{project.evaluationSnapshot.reason}</p>
+      </div>
       <div className="brief-grid">
-        <article className="brief-card brief-card--wide">
-          <span>Three key reasons</span>
+        <article className="brief-card">
+          <span>Why</span>
           <ol className="brief-reason-list">
             {reasons.map((reason) => (
               <li key={reason}>{reason}</li>
@@ -148,17 +323,12 @@ function DecisionBrief({
           </ol>
         </article>
         <article className="brief-card">
-          <span>Core strategic trade-off</span>
-          <strong>{project.coreTradeOff.upside}</strong>
-          <p>{project.coreTradeOff.downside}</p>
-        </article>
-        <article className="brief-card">
-          <span>Recommended option</span>
+          <span>Recommended Change</span>
           <strong>{recommendedOption?.label ?? "No recommended option"}</strong>
           <p>{recommendedOption?.description ?? "Select an option before approval."}</p>
         </article>
         <article className="brief-card brief-card--wide">
-          <span>Required meeting decision</span>
+          <span>Required Meeting Decision</span>
           <strong>{project.requestedDecision}</strong>
           <div className="brief-action-row">
             <button
@@ -178,138 +348,6 @@ function DecisionBrief({
           </div>
         </article>
       </div>
-    </section>
-  );
-}
-
-function DecisionCard({ project }: { project: DecisionProject }) {
-  const reviewEvents = project.timeline.filter((event) =>
-    event.eventType.toLowerCase().includes("review"),
-  );
-
-  return (
-    <section className="meeting-panel-stack">
-      <PanelHeading
-        eyebrow="Decision card"
-        title="What exactly are we deciding?"
-      />
-      <div className="narrative-grid">
-        <NarrativeItem label="Business Objective" value={project.businessObjective} />
-        <NarrativeItem
-          label="Target Customer"
-          value={project.targetCustomers.join(" and ")}
-        />
-        <NarrativeItem label="Customer Journey Moment" value={project.journeyMoment} />
-        <NarrativeItem label="Project Scope" value={project.decisionStatement} />
-        <NarrativeItem label="Budget / Investment Envelope" value={project.budget} />
-        <NarrativeItem
-          label="Owner / Co-owner"
-          value={`${project.owner} / ${project.coOwner}`}
-        />
-        <NarrativeItem label="Primary North Star" value={project.primaryNorthStar} />
-        <NarrativeItem
-          label="Supporting KPIs"
-          value={project.supportingKpis.join(", ")}
-        />
-      </div>
-      <div className="review-grid">
-        <article>
-          <span>Review dates</span>
-          <ul>
-            {reviewEvents.map((event) => (
-              <li key={event.id}>
-                <time>{event.date}</time>
-                <strong>{event.description}</strong>
-              </li>
-            ))}
-          </ul>
-        </article>
-        <article>
-          <span>Exit rule</span>
-          <p>
-            Stop or redesign if Store-level EBITDA stays negative, wait-time
-            degradation breaches the guardrail, or Day 30 repeat-rate evidence
-            does not validate the pilot.
-          </p>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function EvidenceAndOptions({ project }: { project: DecisionProject }) {
-  return (
-    <section className="meeting-panel-stack">
-      <PanelHeading
-        eyebrow="Evidence & options"
-        title="Only decision-relevant evidence is shown"
-      />
-      <div className="evidence-grid">
-        {project.evidence.map((evidence) => (
-          <article className="evidence-card" key={evidence.id}>
-            <div>
-              <span>{evidence.name}</span>
-              <EvidenceQuality quality={evidence.quality} />
-            </div>
-            <strong>{evidence.displayValue}</strong>
-          </article>
-        ))}
-      </div>
-      <div className="tradeoff-banner">
-        <div>
-          <span>Strategic trade-off</span>
-          <strong>{project.coreTradeOff.upside}</strong>
-        </div>
-        <span className="tradeoff-versus">vs.</span>
-        <strong>{project.coreTradeOff.downside}</strong>
-      </div>
-      <div className="table-shell">
-        <table className="operating-table option-table">
-          <thead>
-            <tr>
-              <th>Option</th>
-              <th>Description</th>
-              <th>Customer Value</th>
-              <th>Economic Impact</th>
-              <th>Constraint Status</th>
-              <th>Recommendation</th>
-            </tr>
-          </thead>
-          <tbody>
-            {project.options.map((option) => (
-              <tr className={option.recommended ? "recommended-row" : ""} key={option.id}>
-                <td>
-                  <strong>{option.label}</strong>
-                  {option.recommended && (
-                    <span className="recommended-label">Recommended Option</span>
-                  )}
-                </td>
-                <td>{option.description}</td>
-                <td>{option.customerValue}</td>
-                <td>{option.economicImpact}</td>
-                <td>{option.constraintStatus}</td>
-                <td>{option.recommendation}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <details className="meeting-disclosure">
-        <summary>View Data Sources and Assumptions</summary>
-        <div className="source-grid">
-          {project.evidence.map((evidence) => (
-            <div key={evidence.id}>
-              <strong>{evidence.name}</strong>
-              <span>{evidence.source}</span>
-              <span>{evidence.period}</span>
-              <span>{evidence.calculationNote}</span>
-              <span>
-                Owner: {evidence.owner} · Confidence: {evidence.confidence}
-              </span>
-            </div>
-          ))}
-        </div>
-      </details>
     </section>
   );
 }
@@ -340,11 +378,8 @@ function RulesAndExceptions({
   );
 
   return (
-    <section className="meeting-panel-stack">
-      <PanelHeading
-        eyebrow="Rules & exceptions"
-        title="Only rules applicable to this decision"
-      />
+    <section className="decision-card-section">
+      <h3>Rules and Exceptions</h3>
       <div className="constraint-summary">
         <SummaryChip label="Passed" value={counts.pass} />
         <SummaryChip label="Require Revision" value={counts.revise} />
@@ -374,12 +409,12 @@ function RulesAndExceptions({
                     ? "Executive exception required"
                     : "Revision required before approval"}
                 </strong>
-                <p>Reason: {constraint.derivationRationale}</p>
+                <p>Business rationale: {constraint.derivationRationale}</p>
+                <p>Expected upside: {project.coreTradeOff.upside}</p>
+                <p>Risk accepted: {constraint.description}</p>
                 <p>Authority: {constraint.exceptionPolicy}</p>
-                <p>
-                  Risk accepted: {constraint.description} if the meeting records
-                  an exception.
-                </p>
+                <p>Expiry date: {project.decisionDeadline}</p>
+                <p>Mandatory review date: Day 10 and Day 30</p>
               </div>
             </article>
           );
@@ -390,10 +425,9 @@ function RulesAndExceptions({
           <thead>
             <tr>
               <th>Pillar</th>
-              <th>Constraint</th>
+              <th>Rule</th>
               <th>Project Condition</th>
               <th>Result</th>
-              <th>Outcome</th>
               <th>Required Action</th>
             </tr>
           </thead>
@@ -425,7 +459,6 @@ function RulesAndExceptions({
                   <td>
                     <EvaluationBadge result={evaluation.result} />
                   </td>
-                  <td>{evaluation.outcome}</td>
                   <td>{evaluation.requiredAction}</td>
                 </tr>
               );
@@ -448,7 +481,7 @@ function RulesAndExceptions({
   );
 }
 
-function DecisionFollowUp({
+function ExecutionReviewCard({
   onRecorded,
   project,
   selectedAction,
@@ -477,28 +510,82 @@ function DecisionFollowUp({
   return (
     <section className="meeting-panel-stack">
       <PanelHeading
-        eyebrow="Decision & follow-up"
-        title="Record the human decision after the meeting action is selected"
+        eyebrow="Execution & Review Card"
+        title="What did we decide, who owns it, and when will we review?"
       />
+      <OwnershipModel project={project} />
       <div className="follow-up-summary">
-        <NarrativeItem label="Owner / Co-owner" value={`${project.owner} / ${project.coOwner}`} />
-        <NarrativeItem label="KPI / North Star" value={project.primaryNorthStar} />
+        <NarrativeItem label="Primary North Star" value={project.primaryNorthStar} />
         <NarrativeItem
-          label="Review Schedule"
-          value={project.timeline
-            .filter((event) => event.eventType.toLowerCase().includes("review"))
-            .map((event) => `${event.date}: ${event.description}`)
-            .join(" ")}
+          label="Supporting KPIs"
+          value={project.supportingKpis.join(", ")}
+        />
+        <NarrativeItem
+          label="Success Target"
+          value="+$20K incremental EBITDA within 30 days"
+        />
+        <NarrativeItem
+          label="Guardrail Metrics"
+          value="Wait time, signature-product value perception, payback, product mix"
+        />
+        <NarrativeItem
+          label="Review Plan"
+          value="Day 5, Day 10, Day 30, Day 90"
         />
         <NarrativeItem
           label="Exit Rule"
-          value="Stop or redesign if the pilot cannot restore non-negative EBITDA or protect service and brand guardrails by the review dates."
+          value="Stop the pilot if incremental EBITDA remains negative at Day 10 or average wait time exceeds one minute."
         />
       </div>
+      <ActionPlanTable project={project} />
       <p className="context-note">
-        Select a meeting action from the Decision Brief or sticky rail to open
-        the final human decision record.
+        Select a meeting action from the sticky decision rail or Decision card
+        to open the final human decision record.
       </p>
+    </section>
+  );
+}
+
+function OwnershipModel({ project }: { project: DecisionProject }) {
+  return (
+    <section className="decision-card-section">
+      <h3>Ownership Model</h3>
+      <div className="ownership-grid">
+        <NarrativeItem label="Decision Owner" value={project.owner} />
+        <NarrativeItem label="Execution Owner" value={project.coOwner} />
+        <NarrativeItem label="Data Owner" value="Data Team" />
+        <NarrativeItem label="Approver" value={project.approver} />
+      </div>
+    </section>
+  );
+}
+
+function ActionPlanTable({ project }: { project: DecisionProject }) {
+  return (
+    <section className="decision-card-section">
+      <h3>Action Plan</h3>
+      <div className="table-shell">
+        <table className="operating-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Owner</th>
+              <th>Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {project.proposedActionPlan.map((task) => (
+              <tr key={task.id}>
+                <td>{task.action}</td>
+                <td>{task.owner}</td>
+                <td>{task.dueDate}</td>
+                <td>{task.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
@@ -594,9 +681,9 @@ function getKeyReasons(project: DecisionProject): string[] {
 function recommendationDisplay(
   recommendation: DecisionProject["recommendation"],
 ): string {
-  if (recommendation === "Pass") return "APPROVE";
-  if (recommendation === "Escalate") return "EXECUTIVE ESCALATION";
-  if (recommendation === "Incomplete") return "INCOMPLETE";
+  if (recommendation === "Pass") return "READY FOR APPROVAL";
+  if (recommendation === "Escalate") return "CEO ESCALATION REQUIRED";
+  if (recommendation === "Incomplete") return "DECISION NOT READY";
   return "REVISION REQUIRED";
 }
 

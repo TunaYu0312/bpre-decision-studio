@@ -41,7 +41,7 @@ afterEach(async () => {
 });
 
 describe("Decision Meeting Workspace", () => {
-  it("opens on Decision Brief with five meeting-flow tabs and hides dense governance detail", async () => {
+  it("opens on Decision Project with four meeting cards and hides standalone governance tabs", async () => {
     await renderWorkspace();
 
     expect(
@@ -50,18 +50,15 @@ describe("Decision Meeting Workspace", () => {
       }),
     ).toBeVisible();
     expect(
-      screen.getByRole("tab", { name: /Decision Brief/ }),
+      screen.getByRole("tab", { name: "Decision Project" }),
     ).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tab", { name: /Decision Card/ })).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Data Facts" })).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Decision" })).toBeVisible();
     expect(
-      screen.getByRole("tab", { name: /Evidence & Options/ }),
+      screen.getByRole("tab", { name: "Execution & Review" }),
     ).toBeVisible();
-    expect(
-      screen.getByRole("tab", { name: /Rules & Exceptions/ }),
-    ).toBeVisible();
-    expect(
-      screen.getByRole("tab", { name: /Decision & Follow-up/ }),
-    ).toBeVisible();
+    expect(screen.queryByRole("tab", { name: /Decision Brief/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: /Rules & Exceptions/ })).not.toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Who Are We Trying to Serve?" }),
     ).not.toBeInTheDocument();
@@ -70,65 +67,68 @@ describe("Decision Meeting Workspace", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("summarizes the recommendation, reasons, trade-off, option, and action on the brief tab", async () => {
+  it("shows the decision project context before numbers, recommendations, or rules", async () => {
     await renderWorkspace();
 
-    expect(
-      await screen.findByRole("heading", { name: "REVISION REQUIRED" }),
-    ).toBeVisible();
-    expect(
-      screen.getAllByText("Approve / Revise / Escalate the 30-store pilot")[0],
-    ).toBeVisible();
-    expect(
-      screen.getByText("Short-term morning traffic growth"),
-    ).toBeVisible();
+    expect(await screen.findByText("Decision Project Name")).toBeVisible();
+    expect(screen.getByText("DP-2026-001")).toBeVisible();
+    expect(screen.getByText("Why Now")).toBeVisible();
     expect(
       screen.getByText(
-        "Signature-product value perception, Store-level EBITDA, and peak-period service capacity",
+        "Morning traffic is below target in selected trade areas. The team proposes a bundle offer to improve customer conversion during breakfast hours.",
       ),
     ).toBeVisible();
-    expect(screen.getByText("B. Revised bundle pilot")).toBeVisible();
-    expect(
-      screen.getByText("Improve projected incremental EBITDA to non-negative."),
-    ).toBeVisible();
-    expect(
-      screen.getByRole("button", { name: "Return for Revision" }),
-    ).toBeVisible();
-  });
-
-  it("reveals the decision card and evidence only when their tabs are selected", async () => {
-    const { user } = await renderWorkspace();
-
-    expect(screen.queryByText("Business Objective")).not.toBeInTheDocument();
-
-    await user.click(await screen.findByRole("tab", { name: /Decision Card/ }));
-
     expect(screen.getByText("Business Objective")).toBeVisible();
     expect(screen.getByText(/Core frequency customers/)).toBeVisible();
     expect(
-      screen.getByText("Pilot investment envelope: $22K gross discount and enablement cost"),
+      screen.getAllByText("Approve / Revise / Escalate the 30-store pilot")[0],
     ).toBeVisible();
-    expect(screen.getByText("Day 30 review due.")).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "REVISION REQUIRED" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Expected Incremental EBITDA")).not.toBeInTheDocument();
+  });
 
-    await user.click(screen.getByRole("tab", { name: /Evidence & Options/ }));
+  it("keeps facts separate from options, recommendations, and rules", async () => {
+    const { user } = await renderWorkspace();
+
+    await user.click(await screen.findByRole("tab", { name: "Data Facts" }));
 
     expect(screen.getAllByText("Expected Incremental EBITDA")[0]).toBeVisible();
     expect(screen.getByText("-$4K")).toBeVisible();
     expect(screen.getByText("Verified")).toBeVisible();
-    expect(screen.getByText("A. Launch proposed pilot")).toBeVisible();
     expect(screen.getByText("View Data Sources and Assumptions")).toBeVisible();
+    expect(screen.queryByText("B. Revised bundle pilot")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "REVISION REQUIRED" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Incremental EBITDA must be non-negative")).not.toBeInTheDocument();
+  });
+
+  it("shows options, trade-offs, BPR&E assessment, recommendation, and contextual rules on the decision card", async () => {
+    const { user } = await renderWorkspace();
+
+    await user.click(await screen.findByRole("tab", { name: "Decision" }));
+
+    expect(
+      screen.getByRole("heading", { name: "REVISION REQUIRED" }),
+    ).toBeVisible();
+    expect(screen.getAllByText("B. Revised bundle pilot")[0]).toBeVisible();
+    expect(screen.getByText("Recommended Option")).toBeVisible();
+    expect(screen.getByText("BPR&E Assessment")).toBeVisible();
+    expect(screen.getAllByText("Brand")[0]).toBeVisible();
+    expect(
+      screen.getByText("Improve projected incremental EBITDA to non-negative."),
+    ).toBeVisible();
+    expect(
+      screen.getAllByText("Incremental EBITDA must be non-negative")[0],
+    ).toBeVisible();
+    expect(screen.getByText("4 Passed")).toBeVisible();
+    expect(screen.getByText("2 Require Revision")).toBeVisible();
+    expect(screen.getByText("1 Requires Escalation")).toBeVisible();
   });
 
   it("opens a read-only source drawer for an applied constraint", async () => {
     const { user } = await renderWorkspace();
 
-    await user.click(
-      await screen.findByRole("tab", { name: /Rules & Exceptions/ }),
-    );
+    await user.click(await screen.findByRole("tab", { name: "Decision" }));
 
-    expect(screen.getByText("4 Passed")).toBeVisible();
-    expect(screen.getByText("2 Require Revision")).toBeVisible();
-    expect(screen.getByText("1 Requires Escalation")).toBeVisible();
     expect(screen.getAllByText("RULE-BR-001")).toHaveLength(1);
     expect(
       screen.getByText(
@@ -157,7 +157,7 @@ describe("Decision Meeting Workspace", () => {
     await user.click(
       await screen.findByRole("button", { name: "Return for Revision" }),
     );
-    await user.click(screen.getByRole("tab", { name: /Decision & Follow-up/ }));
+    await user.click(screen.getByRole("tab", { name: "Execution & Review" }));
 
     expect(
       screen.getByRole("heading", {
@@ -167,6 +167,9 @@ describe("Decision Meeting Workspace", () => {
     expect(screen.getByRole("combobox", { name: "Final Decision" })).toHaveValue(
       "Revise",
     );
+    expect(screen.getByText("Ownership Model")).toBeVisible();
+    expect(screen.getByText("Execution Owner")).toBeVisible();
+    expect(screen.getAllByText("Data Owner")[0]).toBeVisible();
 
     await user.click(
       screen.getByRole("button", { name: "Record Human Decision" }),

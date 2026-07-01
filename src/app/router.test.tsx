@@ -15,5 +15,8 @@ describe("application routes", () => {
     expect(
       screen.getByRole("heading", { name: "Decisions requiring attention" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/A structured decision workspace for high-value retail and restaurant decisions/),
+    ).toBeInTheDocument();
   });
 });

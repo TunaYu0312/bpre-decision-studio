@@ -26,8 +26,8 @@ export function DecisionAgendaPage() {
           <p className="eyebrow">Decision meeting queue</p>
           <h1 className="page-title">Decision Agenda</h1>
           <p className="page-description">
-            Prioritize decisions by required judgment, readiness, and review
-            date.
+            Prioritize retail and restaurant Decision Projects by required
+            judgment, template fit, readiness, and review date.
           </p>
         </div>
       </div>
@@ -38,6 +38,7 @@ export function DecisionAgendaPage() {
             <tr>
               <th>Decision</th>
               <th>Meeting mode</th>
+              <th>Template</th>
               <th>Recommendation</th>
               <th>Owner</th>
               <th>North Star</th>
@@ -59,6 +60,7 @@ export function DecisionAgendaPage() {
                     {project.meetingMode}
                   </span>
                 </td>
+                <td>{project.decisionTypeTemplate.name}</td>
                 <td>{project.recommendation}</td>
                 <td>{project.owner}</td>
                 <td>{project.primaryNorthStar}</td>

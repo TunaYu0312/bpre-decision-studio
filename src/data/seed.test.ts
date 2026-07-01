@@ -66,6 +66,16 @@ describe("Dexie workspace repository", () => {
       projectId: "DP-2026-001",
       meetingMode: "Revision Review",
       recommendation: "Revise",
+      executionOwner: "Operations Manager",
+      dataOwner: "Data Team",
+      decisionOperatingProfile: {
+        currentStrategicStage: "Profit Repair Stage",
+        evidenceStandard: "Base case + downside case required",
+        meetingDefault: "Exception-based meeting",
+      },
+      decisionTypeTemplate: {
+        name: "Promotion Decision Template",
+      },
     });
     expect(second.projects[0].evaluationSnapshot.results).toHaveLength(7);
     expect(new Set(second.constraints.map((item) => item.pillar))).toEqual(
@@ -76,7 +86,7 @@ describe("Dexie workspace repository", () => {
     );
   });
 
-  it("uses seed version 4 so existing local demo workspaces refresh for the tab flow", () => {
-    expect(SEED_VERSION).toBe(4);
+  it("uses seed version 5 so existing local demo workspaces refresh for operating profile and templates", () => {
+    expect(SEED_VERSION).toBe(5);
   });
 });

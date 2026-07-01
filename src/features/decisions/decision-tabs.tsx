@@ -117,6 +117,7 @@ function DecisionProjectCard({ project }: { project: DecisionProject }) {
         eyebrow="Decision Project Card"
         title="What are we deciding and why now?"
       />
+      <OperatingModelBanner project={project} />
       <div className="decision-project-hero">
         <NarrativeItem label="Decision Project Name" value={project.title} />
         <NarrativeItem label="Decision ID" value={project.projectId} />
@@ -142,8 +143,93 @@ function DecisionProjectCard({ project }: { project: DecisionProject }) {
         <NarrativeItem label="Decision Request" value={project.decisionRequest} />
         <NarrativeItem label="Decision Owner" value={project.owner} />
         <NarrativeItem label="Co-owner" value={project.coOwner} />
+        <NarrativeItem label="Execution Owner" value={project.executionOwner} />
+        <NarrativeItem label="Data Owner" value={project.dataOwner} />
         <NarrativeItem label="Approver" value={project.approver} />
       </div>
+      <OperatingProfileCard project={project} />
+      <DecisionTypeTemplateCard project={project} />
+    </section>
+  );
+}
+
+function OperatingModelBanner({ project }: { project: DecisionProject }) {
+  return (
+    <section className="operating-model-banner" aria-label="Decision operating model">
+      <div>
+        <span>BPR&E Core</span>
+        <strong>What a sound decision must consider</strong>
+      </div>
+      <b>×</b>
+      <div>
+        <span>Decision Operating Profile</span>
+        <strong>{project.decisionOperatingProfile.currentStrategicStage}</strong>
+      </div>
+      <b>×</b>
+      <div>
+        <span>Decision-Type Template</span>
+        <strong>{project.decisionTypeTemplate.name}</strong>
+      </div>
+      <p>BPR&E Core × Decision Operating Profile × Decision-Type Template</p>
+    </section>
+  );
+}
+
+function OperatingProfileCard({ project }: { project: DecisionProject }) {
+  const profile = project.decisionOperatingProfile;
+
+  return (
+    <section className="decision-card-section">
+      <div>
+        <p className="eyebrow">Company Decision Operating Profile</p>
+        <h3>The company's agreed decision style for this strategic stage</h3>
+      </div>
+      <div className="narrative-grid">
+        <NarrativeItem label="Current Strategic Stage" value={profile.currentStrategicStage} />
+        <NarrativeItem label="Primary North Star" value={profile.primaryNorthStar} />
+        <NarrativeItem label="Decision Style" value={profile.decisionStyle} />
+        <NarrativeItem label="Risk Posture" value={profile.riskPosture} />
+        <NarrativeItem label="Evidence Standard" value={profile.evidenceStandard} />
+        <NarrativeItem label="Economic Review Horizon" value={profile.economicReviewHorizon} />
+        <NarrativeItem label="Escalation Authority" value={profile.escalationAuthority} />
+        <NarrativeItem label="Meeting Default" value={profile.meetingDefault} />
+        <NarrativeItem label="Review Cadence" value={profile.reviewCadence} />
+        <NarrativeItem label="Company Language" value={profile.language.join(", ")} />
+      </div>
+      <div className="profile-redlines">
+        <span>Hard Red Lines</span>
+        <ul>
+          {profile.hardRedLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </div>
+      <p className="context-note">
+        This is an explicit operating profile confirmed by leadership. It is not
+        a hidden CEO personality model.
+      </p>
+    </section>
+  );
+}
+
+function DecisionTypeTemplateCard({ project }: { project: DecisionProject }) {
+  const template = project.decisionTypeTemplate;
+
+  return (
+    <section className="decision-card-section">
+      <div>
+        <p className="eyebrow">Decision-Type Template</p>
+        <h3>{template.name}</h3>
+      </div>
+      <p>{template.purpose}</p>
+      <NarrativeItem label="Template Focus" value={template.bpreFocus.join(", ")} />
+      <div className="template-grid">
+        <TemplateList title="Required facts" items={template.requiredFacts} />
+        <TemplateList title="Required options" items={template.requiredOptions} />
+        <TemplateList title="BPR&E focus" items={template.bpreFocus} />
+        <TemplateList title="Default guardrails" items={template.defaultGuardrails} />
+      </div>
+      <NarrativeItem label="Meeting Focus" value={template.meetingFocus} />
     </section>
   );
 }
@@ -218,6 +304,7 @@ function DecisionCard({
         <span className="tradeoff-versus">vs.</span>
         <strong>{project.coreTradeOff.downside}</strong>
       </div>
+      <TemplateInheritanceNote project={project} />
       <OptionsComparison project={project} />
       <BpreAssessment project={project} />
       <RecommendationPanel
@@ -233,6 +320,25 @@ function DecisionCard({
         onConstraintSelect={onConstraintSelect}
         project={project}
       />
+    </section>
+  );
+}
+
+function TemplateInheritanceNote({ project }: { project: DecisionProject }) {
+  return (
+    <section className="decision-card-section template-inheritance">
+      <div>
+        <p className="eyebrow">Template and governance inheritance</p>
+        <h3>{project.decisionTypeTemplate.name}</h3>
+      </div>
+      <p>
+        This project inherits the company operating profile, but the meeting can record an explicit exception.
+      </p>
+      <div className="constraint-summary">
+        <span>Stage: <strong>{project.decisionOperatingProfile.currentStrategicStage}</strong></span>
+        <span>Evidence: <strong>{project.decisionOperatingProfile.evidenceStandard}</strong></span>
+        <span>Horizon: <strong>{project.decisionOperatingProfile.economicReviewHorizon}</strong></span>
+      </div>
     </section>
   );
 }
@@ -552,8 +658,8 @@ function OwnershipModel({ project }: { project: DecisionProject }) {
       <h3>Ownership Model</h3>
       <div className="ownership-grid">
         <NarrativeItem label="Decision Owner" value={project.owner} />
-        <NarrativeItem label="Execution Owner" value={project.coOwner} />
-        <NarrativeItem label="Data Owner" value="Data Team" />
+        <NarrativeItem label="Execution Owner" value={project.executionOwner} />
+        <NarrativeItem label="Data Owner" value={project.dataOwner} />
         <NarrativeItem label="Approver" value={project.approver} />
       </div>
     </section>
@@ -613,6 +719,19 @@ function ChainItem({ label, value }: { label: string; value: string }) {
     <div>
       <span>{label}</span>
       <p>{value}</p>
+    </div>
+  );
+}
+
+function TemplateList({ items, title }: { items: string[]; title: string }) {
+  return (
+    <div className="template-list">
+      <span>{title}</span>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 }

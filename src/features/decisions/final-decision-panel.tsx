@@ -69,8 +69,8 @@ export function FinalDecisionPanel({
       decisionMaker: project.approver,
       decisionDate: project.meetingDate,
       owner: project.owner,
-      coOwner: project.coOwner,
-      dataOwner: "Data Team",
+      coOwner: project.executionOwner,
+      dataOwner: project.dataOwner,
       approver: project.approver,
       primaryNorthStar: project.primaryNorthStar,
       supportingKpis: project.supportingKpis.join("\n"),
@@ -178,11 +178,11 @@ export function FinalDecisionPanel({
               </div>
               <div className="narrative-item">
                 <span>Execution Owner</span>
-                <p>{project.coOwner}</p>
+                <p>{project.executionOwner}</p>
               </div>
               <div className="narrative-item">
                 <span>Data Owner</span>
-                <p>Data Team</p>
+                <p>{project.dataOwner}</p>
               </div>
               <div className="narrative-item">
                 <span>Approver</span>

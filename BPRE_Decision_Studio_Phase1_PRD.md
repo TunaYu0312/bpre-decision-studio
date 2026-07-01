@@ -1,50 +1,72 @@
-# BPR&E Decision Studio — Phase 1 PRD
+# BPR&E Decision Meeting Studio — Phase 1 PRD
 
 **Document status:** Implementation-ready
 
-**Product:** BPR&E Decision Studio
+**Product:** BPR&E Decision Meeting Studio
 
-**Phase:** Phase 1 — Common Decision System Foundation
+**Phase:** Phase 1 — Retail & Restaurant Decision Meeting MVP
 
 **Primary language of UI:** English-first, with copy centralized for future localization
 
 **Deployment target:** Public static web demo suitable for LinkedIn Featured
 
-**Product principle:** Human-led decision governance. The system structures evidence, rules, trade-offs, accountability, and review. It does not replace accountable management judgement or automatically execute business decisions.
+**Product principle:** BPR&E does not replace a company's management philosophy. It turns the company's chosen strategic priorities, risk posture, evidence standards, and meeting habits into a clearer, executable, and reviewable decision mechanism.
 
 ---
 
 ## 1. Product Summary
 
-BPR&E Decision Studio is a local-first decision governance application for high-value business decisions in chain retail and restaurant businesses.
+BPR&E Decision Meeting Studio is a local-first, meeting-first decision workspace for high-value business decisions in chain retail and restaurant businesses.
 
-Phase 1 builds the common foundation required by all later decision scenarios:
+It is not a generic Decision OS, BI dashboard, approval workflow, Constitution management tool, rule repository, or AI decision-maker. The product opportunity is narrower and more concrete: help chain retail and restaurant teams turn high-value operating meetings into structured, accountable, and reviewable decisions.
+
+Phase 1 builds the common meeting engine required by all later retail / restaurant decision scenarios:
 
 ```text
-Decision Constitution
-→ Derived Constraints
-→ Decision Card
-→ Evaluation Snapshot
-→ Human Decision
-→ Action Plan
-→ Review
+BPR&E Core
+  x Decision Operating Profile
+  x Decision-Type Template
+  -> Decision Meeting Workspace
 ```
 
 The primary user journey is:
 
 ```text
 Decision Agenda
-→ Decision Meeting Workspace
-→ Evidence and Constraint Evaluation
-→ Pass / Revise / Escalate Recommendation
-→ Accountable Human Decision
-→ Action Plan
-→ Review and Learning
+-> Decision Project
+-> Data Facts
+-> Options & Trade-offs
+-> Recommendation
+-> Rules / Constraints Check
+-> Human Decision
+-> Execution Plan
+-> Review & Learning
 ```
 
 The application must demonstrate how an organization converts strategic priorities into measurable constraints, evaluates a real project against those constraints, presents the decision in a meeting-ready workspace, records accountable human judgement, assigns owners and KPIs, and preserves a review trail.
 
-Phase 1 is not a dashboard project or a governance document viewer. It is a structured decision workspace.
+Phase 1 is not a dashboard project or a governance document viewer. It is a structured decision meeting workspace.
+
+### 1.1 Phase 1 MVP boundary update
+
+The MVP should prove that one real chain operating decision meeting can run end-to-end:
+
+1. What decision needs to be made now?
+2. What is the current recommendation?
+3. What facts are known, estimated, assumed, or missing?
+4. What are the real options and trade-offs?
+5. Which constraints or red lines are triggered?
+6. What did accountable humans decide?
+7. Who owns execution and measurement?
+8. What KPI, review date, and exit rule define success or failure?
+
+Future scenario modules should reuse the same meeting engine:
+
+- Promotion Decision
+- Pricing Decision
+- Menu Portfolio Decision
+- New Product Pilot Decision
+- Store Network Portfolio Decision
 
 ---
 
@@ -173,6 +195,68 @@ Decision Constitution
 → Action Plan
 → Review
 ```
+
+---
+
+## 5.2 Decision Operating Profile & Configurable Governance Model
+
+The system should not force companies to adopt one decision style. It should make each company's decision logic explicit, structured, reviewable, and improvable.
+
+BPR&E Core defines what a sound high-value decision must consider:
+
+- Brand and customer meaning.
+- Product value, mix, quality, margin, and complexity.
+- Restaurant / Retail execution capacity, channel, labor, and service impact.
+- Economic Box impact, payback, cash discipline, and exit logic.
+
+The Company Decision Operating Profile defines how this company prefers to make decisions in its current strategic stage. In Phase 1 this is a lightweight, visible context layer inherited by every Decision Project. It is not a personalization engine and must not become a hidden "CEO personality" model.
+
+Minimum Phase 1 fields:
+
+- Current Strategic Stage
+- Primary North Star
+- Decision Style
+- Risk Posture
+- Evidence Standard
+- Economic Review Horizon
+- Hard Red Lines
+- Escalation Authority
+- Meeting Default
+- Review Cadence
+- Company Language
+- Version
+
+Every Decision Project also inherits a Decision-Type Template. Phase 1 implements the Promotion Decision Template as the seeded example. Later versions should add:
+
+- Pricing Decision
+- Menu Portfolio Decision
+- New Product Pilot Decision
+- Store Network Portfolio Decision
+
+The resulting operating logic is:
+
+```text
+BPR&E Core
+  x Company Decision Operating Profile
+  x Decision-Type Template
+  -> Decision Project
+  -> Decision Meeting Workspace
+```
+
+Example Phase 1 profile:
+
+```text
+Current Strategic Stage: Profit Repair Stage
+Primary North Star: Store-level EBITDA
+Decision Style: CEO final decision with CFO / COO challenge
+Risk Posture: Balanced but economically disciplined
+Evidence Standard: Base case + downside case required
+Economic Review Horizon: 30-day EBITDA review with 90-day payback signal
+Meeting Default: Exception-based meeting
+CEO Escalation: Brand red lines and negative EBITDA exceptions
+```
+
+This makes the same Breakfast Combo Pilot produce different recommendations under different strategic stages without claiming BPR&E is a universal fixed answer.
 
 ---
 

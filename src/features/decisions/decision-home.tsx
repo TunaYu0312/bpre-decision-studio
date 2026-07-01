@@ -44,11 +44,12 @@ export function DecisionHomePage() {
     <section className="mx-auto max-w-7xl">
       <div className="page-header">
         <div>
-          <p className="eyebrow">CEO decision control</p>
+          <p className="eyebrow">BPR&E Decision Meeting Studio</p>
           <h1 className="page-title">Decisions requiring attention</h1>
           <p className="page-description">
-            Start with the judgment required now, then inspect evidence,
-            trade-offs, and relevant rules.
+            A structured decision workspace for high-value retail and restaurant decisions.
+            It turns business meetings into clear recommendations, accountable
+            action plans, and review commitments.
           </p>
         </div>
         <Link className="button button--secondary" to="/decision-agenda">
@@ -109,6 +110,7 @@ export function DecisionHomePage() {
                   <div className="attention-meta">
                     <span>Owner: {project.owner}</span>
                     <span>North Star: {project.primaryNorthStar}</span>
+                    <span>Template: {project.decisionTypeTemplate.name}</span>
                     <span>Decision date: {project.decisionDeadline}</span>
                   </div>
                 </div>

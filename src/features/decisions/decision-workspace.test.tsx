@@ -65,13 +65,27 @@ describe("Decision Meeting Workspace", () => {
     expect(
       screen.queryByRole("heading", { name: "Which Strategic Rules Apply?" }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "BPR&E Core × Decision Operating Profile × Decision-Type Template",
+      ),
+    ).toBeVisible();
   });
 
-  it("shows the decision project context before numbers, recommendations, or rules", async () => {
+  it("shows the decision project, operating profile, and decision type template before numbers or rules", async () => {
     await renderWorkspace();
 
     expect(await screen.findByText("Decision Project Name")).toBeVisible();
     expect(screen.getByText("DP-2026-001")).toBeVisible();
+    expect(screen.getByText("Company Decision Operating Profile")).toBeVisible();
+    expect(screen.getAllByText("Profit Repair Stage")[0]).toBeVisible();
+    expect(screen.getByText("Evidence Standard")).toBeVisible();
+    expect(screen.getByText("Base case + downside case required")).toBeVisible();
+    expect(screen.getAllByText("Decision-Type Template")[0]).toBeVisible();
+    expect(screen.getAllByText("Promotion Decision Template")[0]).toBeVisible();
+    expect(
+      screen.getByText(/Traffic uplift.*Product mix.*Brand value.*Wait time.*Incremental EBITDA/),
+    ).toBeVisible();
     expect(screen.getByText("Why Now")).toBeVisible();
     expect(
       screen.getByText(
@@ -106,6 +120,10 @@ describe("Decision Meeting Workspace", () => {
 
     await user.click(await screen.findByRole("tab", { name: "Decision" }));
 
+    expect(screen.getAllByText("Promotion Decision Template")[0]).toBeVisible();
+    expect(
+      screen.getByText("This project inherits the company operating profile, but the meeting can record an explicit exception."),
+    ).toBeVisible();
     expect(
       screen.getByRole("heading", { name: "REVISION REQUIRED" }),
     ).toBeVisible();
@@ -168,7 +186,7 @@ describe("Decision Meeting Workspace", () => {
       "Revise",
     );
     expect(screen.getByText("Ownership Model")).toBeVisible();
-    expect(screen.getByText("Execution Owner")).toBeVisible();
+    expect(screen.getAllByText("Execution Owner")[0]).toBeVisible();
     expect(screen.getAllByText("Data Owner")[0]).toBeVisible();
 
     await user.click(

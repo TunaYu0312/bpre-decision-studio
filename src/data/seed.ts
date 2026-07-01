@@ -21,7 +21,7 @@ import {
 
 import type { WorkspaceRepository } from "./repository";
 
-export const SEED_VERSION = 4;
+export const SEED_VERSION = 5;
 const CREATED_AT = "2026-01-01T00:00:00.000Z";
 const CONSTITUTION_ID = "constitution-profit-repair-2026-v1";
 
@@ -570,6 +570,8 @@ export const seedDecisionProject: DecisionProject = decisionProjectSchema.parse(
   requestedDecision: "Approve pilot / Return for revision / Escalate to CEO",
   owner: "Marketing Director",
   coOwner: "Operations Manager",
+  executionOwner: "Operations Manager",
+  dataOwner: "Data Team",
   approver: "CEO",
   primaryNorthStar: "Store-level EBITDA",
   supportingKpis: [
@@ -595,6 +597,61 @@ export const seedDecisionProject: DecisionProject = decisionProjectSchema.parse(
     upside: "Short-term morning traffic growth",
     downside:
       "Signature-product value perception, Store-level EBITDA, and peak-period service capacity",
+  },
+  decisionOperatingProfile: {
+    currentStrategicStage: "Profit Repair Stage",
+    primaryNorthStar: "Store-level EBITDA",
+    decisionStyle: "CEO final decision with CFO / COO challenge",
+    riskPosture: "Balanced but economically disciplined",
+    evidenceStandard: "Base case + downside case required",
+    economicReviewHorizon: "30-day EBITDA review with 90-day payback signal",
+    hardRedLines: [
+      "No sustained negative EBITDA beyond the 30-day review horizon",
+      "No standalone deep discount on signature products",
+      "No material degradation of peak-period wait time",
+    ],
+    escalationAuthority: "CEO for brand red lines and negative EBITDA exceptions",
+    meetingDefault: "Exception-based meeting",
+    reviewCadence: "Day 5 / Day 10 / Day 30 / Day 90",
+    language: ["Store-level EBITDA", "Restaurant/Retail", "Decision Owner"],
+    version: "1.0",
+  },
+  decisionTypeTemplate: {
+    name: "Promotion Decision Template",
+    decisionType: "Promotion",
+    purpose:
+      "Evaluate whether a traffic-driving offer creates enough incremental value without damaging brand, product, execution, or the Economic Box.",
+    requiredFacts: [
+      "Traffic uplift",
+      "Average check impact",
+      "Gross profit dollars",
+      "Incremental EBITDA",
+      "Wait-time impact",
+      "Repeat-rate impact",
+      "Payback period",
+      "Investment amount",
+    ],
+    requiredOptions: [
+      "Proposed option",
+      "Recommended option",
+      "Fallback / no-action option",
+    ],
+    bpreFocus: [
+      "Traffic uplift",
+      "Product mix",
+      "Brand value",
+      "Wait time",
+      "Incremental EBITDA",
+    ],
+    defaultGuardrails: [
+      "Discount rate <= 20%",
+      "No standalone deep discount on signature products",
+      "Wait-time increase <= 1 minute",
+      "Incremental EBITDA >= 0",
+      "Payback <= 3 months",
+    ],
+    meetingFocus:
+      "Decide whether to launch, revise, escalate, reject, or defer the promotion mechanics.",
   },
   evidence: [
     {

@@ -88,6 +88,7 @@ export function DecisionWorkspacePage() {
           </nav>
           <div className="meeting-status-row">
             <span>{project.decisionType}</span>
+            <span>{project.decisionTypeTemplate.name}</span>
             <span>{project.decisionLevel}</span>
             <span>{project.meetingMode}</span>
             <span>Meeting: 14 Jun 2026</span>
@@ -112,13 +113,14 @@ export function DecisionWorkspacePage() {
       </div>
 
       <header className="decision-meeting-header">
-        <p className="eyebrow">Decision meeting workspace</p>
+        <p className="eyebrow">Retail and restaurant decision meeting workspace</p>
         <h1>{project.title}</h1>
         <p>{project.subtitle}</p>
         <div className="decision-snapshot-grid">
           <Snapshot label="Decision Request" value={project.decisionRequest} />
           <Snapshot label="Decision Owner" value={project.owner} />
-          <Snapshot label="Co-owner" value={project.coOwner} />
+          <Snapshot label="Execution Owner" value={project.executionOwner} />
+          <Snapshot label="Data Owner" value={project.dataOwner} />
           <Snapshot label="Decision Deadline" value={project.decisionDeadline} />
           <Snapshot label="Strategic Stage" value={project.strategicStage} />
           <Snapshot label="Primary North Star" value={project.primaryNorthStar} />

@@ -93,6 +93,32 @@ export const bpreImpactSchema = z.object({
   summary: nonEmptyStringSchema,
 });
 
+export const decisionOperatingProfileSchema = z.object({
+  currentStrategicStage: nonEmptyStringSchema,
+  primaryNorthStar: nonEmptyStringSchema,
+  decisionStyle: nonEmptyStringSchema,
+  riskPosture: nonEmptyStringSchema,
+  evidenceStandard: nonEmptyStringSchema,
+  economicReviewHorizon: nonEmptyStringSchema,
+  hardRedLines: z.array(nonEmptyStringSchema).min(1),
+  escalationAuthority: nonEmptyStringSchema,
+  meetingDefault: nonEmptyStringSchema,
+  reviewCadence: nonEmptyStringSchema,
+  language: z.array(nonEmptyStringSchema).min(1),
+  version: versionSchema,
+});
+
+export const decisionTypeTemplateSchema = z.object({
+  name: nonEmptyStringSchema,
+  decisionType: z.enum(decisionTypes),
+  purpose: nonEmptyStringSchema,
+  requiredFacts: z.array(nonEmptyStringSchema).min(1),
+  requiredOptions: z.array(nonEmptyStringSchema).min(1),
+  bpreFocus: z.array(nonEmptyStringSchema).min(1),
+  defaultGuardrails: z.array(nonEmptyStringSchema).min(1),
+  meetingFocus: nonEmptyStringSchema,
+});
+
 export const constraintEvaluationSchema = z.object({
   constraintId: nonEmptyStringSchema,
   constraintVersion: versionSchema,
@@ -195,6 +221,8 @@ export const decisionProjectSchema = z.object({
   requestedDecision: nonEmptyStringSchema,
   owner: nonEmptyStringSchema,
   coOwner: nonEmptyStringSchema,
+  executionOwner: nonEmptyStringSchema,
+  dataOwner: nonEmptyStringSchema,
   approver: nonEmptyStringSchema,
   primaryNorthStar: nonEmptyStringSchema,
   supportingKpis: z.array(nonEmptyStringSchema).min(1),
@@ -206,6 +234,8 @@ export const decisionProjectSchema = z.object({
     upside: nonEmptyStringSchema,
     downside: nonEmptyStringSchema,
   }),
+  decisionOperatingProfile: decisionOperatingProfileSchema,
+  decisionTypeTemplate: decisionTypeTemplateSchema,
   evidence: z.array(decisionEvidenceSchema).min(1),
   evidenceComplete: z.number().int().nonnegative(),
   evidenceRequired: z.number().int().positive(),
@@ -223,6 +253,10 @@ export const decisionProjectSchema = z.object({
 });
 
 export type DecisionProject = z.infer<typeof decisionProjectSchema>;
+export type DecisionOperatingProfile = z.infer<
+  typeof decisionOperatingProfileSchema
+>;
+export type DecisionTypeTemplate = z.infer<typeof decisionTypeTemplateSchema>;
 export type ConstraintEvaluation = z.infer<typeof constraintEvaluationSchema>;
 export type HumanDecisionRecord = z.infer<typeof humanDecisionRecordSchema>;
 export type DecisionCommitments = z.infer<typeof decisionCommitmentsSchema>;

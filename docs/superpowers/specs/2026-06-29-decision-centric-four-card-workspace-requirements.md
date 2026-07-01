@@ -1,8 +1,19 @@
-# BPR&E Decision Studio — Decision-Centric Four-Card Workspace Requirements
+# BPR&E Decision Meeting Studio — Decision-Centric Four-Card Workspace Requirements
 
 ## 1. Product Direction
 
-BPR&E Decision Studio must be a decision workspace, not a governance document viewer. The primary product object is the Decision Project. Decision Constitution, Constraint Blueprint, Constraint Library, and Rule Derivation remain important governance layers, but they should explain why a recommendation exists instead of dominating the default user journey.
+BPR&E Decision Meeting Studio must be a meeting-first decision workspace for high-value retail and restaurant decisions, not a generic Decision OS, governance document viewer, BI dashboard, approval workflow, or rule repository.
+
+The primary product object is the Decision Project. Decision Constitution, Constraint Blueprint, Constraint Library, Rule Derivation, Company Decision Operating Profile, and Decision-Type Template are support layers that explain how the meeting recommendation was produced.
+
+The core product logic is:
+
+```text
+BPR&E Core
+  x Company Decision Operating Profile
+  x Decision-Type Template
+  -> Decision Meeting Workspace
+```
 
 The visible product flow for business users is:
 
@@ -16,8 +27,9 @@ Decision Project
 The supporting governance flow is:
 
 ```text
-Decision Constitution
-→ Constraint Blueprint
+BPR&E Core
+→ Company Decision Operating Profile
+→ Decision-Type Template
 → Applicable Constraints
 → Decision Evaluation
 → Recommendation
@@ -141,7 +153,37 @@ Required content:
 - Decision Request: Approve / Revise / Escalate / Reject / Defer
 - Decision Owner
 - Co-owner
+- Execution Owner
+- Data Owner
 - Approver
+- Company Decision Operating Profile
+- Decision-Type Template
+
+Operating Profile fields for Phase 1:
+
+- Current Strategic Stage
+- Primary North Star
+- Decision Style
+- Risk Posture
+- Evidence Standard
+- Economic Review Horizon
+- Hard Red Lines
+- Escalation Authority
+- Meeting Default
+- Review Cadence
+- Company Language
+- Version
+
+Decision-Type Template fields for Phase 1:
+
+- Template name
+- Decision type
+- Purpose
+- Required facts
+- Required options
+- BPR&E focus
+- Default guardrails
+- Meeting focus
 
 ## 7. Card 2 — Data Facts
 

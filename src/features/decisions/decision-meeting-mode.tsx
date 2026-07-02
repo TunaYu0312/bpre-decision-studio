@@ -167,19 +167,22 @@ export function DecisionMeetingModePage() {
             Previous
           </button>
           <span>{activePage.label}</span>
-          <button
-            className="button button--primary"
-            disabled={activeIndex === meetingPages.length - 1}
-            onClick={() =>
-              setActiveIndex((index) =>
-                Math.min(meetingPages.length - 1, index + 1),
-              )
-            }
-            type="button"
-          >
-            Next
-            <ArrowRight aria-hidden="true" size={16} />
-          </button>
+          {activeIndex === meetingPages.length - 1 ? (
+            <span className="meeting-complete-indicator">End of meeting flow</span>
+          ) : (
+            <button
+              className="button button--primary"
+              onClick={() =>
+                setActiveIndex((index) =>
+                  Math.min(meetingPages.length - 1, index + 1),
+                )
+              }
+              type="button"
+            >
+              Next
+              <ArrowRight aria-hidden="true" size={16} />
+            </button>
+          )}
         </footer>
       </section>
     </main>

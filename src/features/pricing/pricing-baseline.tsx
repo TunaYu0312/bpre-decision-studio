@@ -2,219 +2,266 @@ import {
   ArrowLeft,
   ArrowRight,
   BadgeDollarSign,
+  CalendarClock,
   CircleCheck,
-  Database,
-  FlaskConical,
   ReceiptText,
   ShoppingBasket,
+  Store,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 
-import { seedPricingProjects } from "@/data/pricing-seed";
-import { calculateBaselineEconomics } from "@/domain/pricing";
+import {
+  seedMenuAnalysisSlices,
+  seedPricingProjects,
+} from "@/data/pricing-seed";
+import {
+  calculateBaselineEconomics,
+  type BaselineEconomics,
+  type MenuEngineeringCategory,
+} from "@/domain/pricing";
 
 import {
   currencyFormatter,
+  compactCurrencyFormatter,
   decimalFormatter,
   numberFormatter,
   percentFormatter,
   priceFormatter,
 } from "./pricing-format";
+import { PricingFlow } from "./pricing-flow";
+
+const matrixOrder: MenuEngineeringCategory[] = [
+  "Star",
+  "Plowhorse",
+  "Puzzle",
+  "Dog",
+];
+
+const matrixDescriptions: Record<MenuEngineeringCategory, string> = {
+  Star: "High popularity · High contribution",
+  Plowhorse: "High popularity · Lower contribution",
+  Puzzle: "Lower popularity · High contribution",
+  Dog: "Lower popularity · Lower contribution",
+};
 
 export function PricingBaselinePage() {
   const { id } = useParams();
   const project = seedPricingProjects.find((record) => record.id === id);
+  const [sliceId, setSliceId] = useState("all-day");
 
-  if (!project) {
-    return <Navigate replace to="/pricing" />;
-  }
+  if (!project) return <Navigate replace to="/pricing" />;
 
-  const baseline = calculateBaselineEconomics(
-    project.items,
-    project.transactions,
+  const selectedSlice =
+    seedMenuAnalysisSlices.find((slice) => slice.id === sliceId) ??
+    seedMenuAnalysisSlices[0];
+  const analysis = calculateBaselineEconomics(
+    selectedSlice.items,
+    selectedSlice.transactions,
+    { periodDays: project.periodDays, storeCount: project.storeCount },
   );
-  const topGrossProfitItem = [...baseline.items].sort(
-    (left, right) => right.grossProfit - left.grossProfit,
-  )[0];
 
   return (
     <section className="mx-auto max-w-[1500px]">
-      <Link className="back-link" to="/pricing">
+      <Link className="back-link" to={`/pricing/${project.id}/intent`}>
         <ArrowLeft aria-hidden="true" size={15} />
-        Pricing Projects
+        Decision Intent
       </Link>
+      <PricingFlow active="baseline" projectId={project.id} />
 
-      <div className="page-header mt-5">
+      <div className="page-header mt-6">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <p className="eyebrow">Baseline &amp; Research · Step 1 of 4</p>
+            <p className="eyebrow">Step 2 · Meeting material preparation</p>
             <span className="pricing-status pricing-status--ready">
               <CircleCheck aria-hidden="true" size={13} />
-              Verified baseline
+              POS baseline reconciled
             </span>
           </div>
-          <h1 className="page-title">{project.title}</h1>
+          <h1 className="page-title">Menu Analysis</h1>
           <p className="page-description">
-            Establish the item-level economics and a consistent UPH denominator
-            before testing any new price.
+            Diagnose Product Mix, daily operating economics, and menu roles for
+            all day or a selected daypart before discussing price.
           </p>
         </div>
-        <Link
-          className="button button--primary"
-          to={`/pricing/${project.id}/research`}
-        >
-          Continue to Price Sensitivity
+        <Link className="button button--primary" to={`/pricing/${project.id}/research`}>
+          Continue to Price Response
           <ArrowRight aria-hidden="true" size={16} />
         </Link>
       </div>
 
-      <div className="pricing-scope-strip mt-7">
-        <ScopeItem label="Scope" value={project.scope} />
-        <ScopeItem label="Baseline period" value={project.baselinePeriod} />
-        <ScopeItem
-          label="UPH denominator"
-          value={project.eligibleTransactionDefinition}
-        />
-        <ScopeItem label="Owner" value={project.owner} />
+      <div className="analysis-toolbar mt-7">
+        <div>
+          <label htmlFor="daypart">Analysis period</label>
+          <select
+            id="daypart"
+            onChange={(event) => setSliceId(event.target.value)}
+            value={sliceId}
+          >
+            {seedMenuAnalysisSlices.map((slice) => (
+              <option key={slice.id} value={slice.id}>
+                {slice.label} · {slice.timeWindow}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <span>Data grain</span>
+          <strong>{project.dataGrain}</strong>
+        </div>
+        <div>
+          <span>Coverage</span>
+          <strong>{project.storeCount} stores · {project.periodDays} days</strong>
+        </div>
+        <div>
+          <span>Custom period</span>
+          <strong>Enabled when POS transaction timestamps are imported</strong>
+        </div>
       </div>
 
-      <div className="pricing-metric-grid mt-5">
-        <MetricCard
-          icon={ShoppingBasket}
-          label="Eligible transactions"
-          value={numberFormatter.format(baseline.transactions)}
-        />
-        <MetricCard
-          icon={ReceiptText}
-          label="Total menu UPH"
-          value={decimalFormatter.format(baseline.totalUph)}
-        />
-        <MetricCard
-          icon={BadgeDollarSign}
-          label="Net sales"
-          value={currencyFormatter.format(baseline.netSales)}
-        />
-        <MetricCard
-          icon={BadgeDollarSign}
-          label="Gross profit dollars"
-          value={currencyFormatter.format(baseline.grossProfit)}
-        />
-        <MetricCard
-          icon={Database}
-          label="Gross margin"
-          value={percentFormatter.format(baseline.grossMargin)}
-        />
+      <div className="pricing-metric-grid pricing-metric-grid--six mt-5">
+        <Metric icon={ShoppingBasket} label="Period transactions" value={numberFormatter.format(analysis.transactions)} />
+        <Metric icon={Store} label="ADTC" value={decimalFormatter.format(analysis.adtc)} />
+        <Metric icon={ReceiptText} label="Average Check (AC)" value={priceFormatter.format(analysis.averageCheck)} />
+        <Metric icon={BadgeDollarSign} label="Average Daily Sales (ADS)" value={currencyFormatter.format(analysis.ads)} />
+        <Metric icon={CalendarClock} label="Total menu UPH" value={decimalFormatter.format(analysis.totalUph)} />
+        <Metric icon={BadgeDollarSign} label="Gross profit" value={compactCurrencyFormatter.format(analysis.grossProfit)} />
       </div>
 
-      <div className="pricing-baseline-layout mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <section className="pricing-baseline-main">
-          <div className="table-shell">
-            <table className="operating-table pricing-baseline-table">
-              <thead>
-                <tr>
-                  <th>Menu item</th>
-                  <th>Role</th>
-                  <th>List price</th>
-                  <th>Net price</th>
-                  <th>Units</th>
-                  <th>UPH</th>
-                  <th>Sales</th>
-                  <th>Sales %</th>
-                  <th>Gross profit</th>
-                  <th>Gross margin</th>
-                  <th>Evidence</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baseline.items.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <strong className="pricing-item-name">{item.name}</strong>
-                      <span className="record-meta">{item.category}</span>
-                    </td>
-                    <td>
-                      <span className="soft-tag">{item.role}</span>
-                    </td>
-                    <td>{priceFormatter.format(item.listPrice)}</td>
-                    <td>{priceFormatter.format(item.netRealizedPrice)}</td>
-                    <td>{numberFormatter.format(item.units)}</td>
-                    <td>{decimalFormatter.format(item.uph)}</td>
-                    <td>{currencyFormatter.format(item.netSales)}</td>
-                    <td>{percentFormatter.format(item.salesMix)}</td>
-                    <td>{currencyFormatter.format(item.grossProfit)}</td>
-                    <td>{percentFormatter.format(item.grossMargin)}</td>
-                    <td>
-                      <span className="evidence-badge evidence-badge--observed">
-                        {item.evidenceQuality}
-                      </span>
-                      <span className="record-meta">{item.source}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={4}>Baseline total</td>
-                  <td>{numberFormatter.format(baseline.totalUnits)}</td>
-                  <td>{decimalFormatter.format(baseline.totalUph)}</td>
-                  <td>{currencyFormatter.format(baseline.netSales)}</td>
-                  <td>100.0%</td>
-                  <td>{currencyFormatter.format(baseline.grossProfit)}</td>
-                  <td>{percentFormatter.format(baseline.grossMargin)}</td>
-                  <td>Observed</td>
-                </tr>
-              </tfoot>
-            </table>
+      <div className="menu-analysis-layout mt-5">
+        <section className="menu-matrix-panel">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Menu Engineering Matrix · Boston-style</p>
+              <h2>{selectedSlice.label} menu position</h2>
+            </div>
+            <span>Popularity × contribution margin per unit</span>
+          </div>
+          <div className="menu-matrix mt-5">
+            {matrixOrder.map((category) => (
+              <article className={`matrix-quadrant matrix-quadrant--${category.toLowerCase()}`} key={category}>
+                <div>
+                  <strong>{category}</strong>
+                  <span>{matrixDescriptions[category]}</span>
+                </div>
+                <ul>
+                  {analysis.items
+                    .filter((item) => item.menuEngineeringCategory === category)
+                    .map((item) => (
+                      <li key={item.id}>
+                        <strong>{item.name}</strong>
+                        <span>
+                          UPH {decimalFormatter.format(item.uph)} · CM {priceFormatter.format(item.contributionMargin)}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              </article>
+            ))}
           </div>
           <p className="disclaimer mt-4">
-            UPH = item units ÷ eligible transactions × 100. Net realized price
-            is used for economics. Sales % = item net sales ÷ total net sales;
-            it is the Product Mix used for pricing analysis. Demo values are
-            illustrative.
+            Classification is diagnostic, not a pricing instruction. The demo
+            uses 70% of average item popularity and weighted average contribution
+            margin as thresholds. Production thresholds are configurable by
+            category, and substitution must be reviewed before acting.
           </p>
         </section>
 
-        <aside className="pricing-readiness-panel">
-          <div>
-            <p className="eyebrow">Readiness check</p>
-            <h2>Baseline is usable</h2>
-          </div>
-          <ReadinessItem
-            status="ready"
-            title="POS demand"
-            description="Item units and eligible transactions use the same scope and period."
-          />
-          <ReadinessItem
-            status="ready"
-            title="Item economics"
-            description="Net realized price and variable cost are available for all eight items."
-          />
-          <ReadinessItem
-            status="pending"
-            title="Price response"
-            description="Price Sensitivity Study and observed elasticity have not been added."
-          />
-          <div className="pricing-insight">
-            <span>Largest gross-profit pool</span>
-            <strong>{topGrossProfitItem.name}</strong>
-            <p>{currencyFormatter.format(topGrossProfitItem.grossProfit)}</p>
+        <aside className="menu-analysis-questions">
+          <p className="eyebrow">Questions for the meeting</p>
+          <h2>What does this slice tell us?</h2>
+          <ol>
+            <li>Which items create traffic but under-deliver contribution?</li>
+            <li>Which profitable items have low visibility or weak conversion?</li>
+            <li>Which items protect entry price and Good Value for Money?</li>
+            <li>Where could a price move shift demand to a worse mix?</li>
+          </ol>
+          <div className="formula-card">
+            <span>Daily operating bridge</span>
+            <strong>ADS = AC × ADTC</strong>
+            <strong>ADQ = UPH × ADTC ÷ 100</strong>
+            <p>
+              Multi-store inputs are normalized per store per day before these
+              formulas are applied.
+            </p>
           </div>
         </aside>
       </div>
+
+      <section className="mt-5">
+        <div className="section-heading mb-4">
+          <div>
+            <p className="eyebrow">Product Mix detail</p>
+            <h2>{selectedSlice.label} item economics</h2>
+          </div>
+          <span>Sales % = item sales ÷ total sales</span>
+        </div>
+        <ProductMixTable analysis={analysis} />
+      </section>
     </section>
   );
 }
 
-function ScopeItem({ label, value }: { label: string; value: string }) {
+function ProductMixTable({ analysis }: { analysis: BaselineEconomics }) {
   return (
-    <div>
-      <span>{label}</span>
-      <strong>{value}</strong>
+    <div className="table-shell">
+      <table className="operating-table pricing-baseline-table">
+        <thead>
+          <tr>
+            <th>Menu item</th>
+            <th>Role</th>
+            <th>Matrix</th>
+            <th>List price</th>
+            <th>Units</th>
+            <th>UPH</th>
+            <th>ADQ</th>
+            <th>Sales</th>
+            <th>Sales %</th>
+            <th>CM / unit</th>
+            <th>Gross profit</th>
+            <th>GM%</th>
+          </tr>
+        </thead>
+        <tbody>
+          {analysis.items.map((item) => (
+            <tr key={item.id}>
+              <td>
+                <strong className="pricing-item-name">{item.name}</strong>
+                <span className="record-meta">{item.category}</span>
+              </td>
+              <td><span className="soft-tag">{item.role}</span></td>
+              <td><span className={`matrix-tag matrix-tag--${item.menuEngineeringCategory.toLowerCase()}`}>{item.menuEngineeringCategory}</span></td>
+              <td>{priceFormatter.format(item.listPrice)}</td>
+              <td>{numberFormatter.format(item.units)}</td>
+              <td>{decimalFormatter.format(item.uph)}</td>
+              <td>{decimalFormatter.format(item.adq)}</td>
+              <td>{currencyFormatter.format(item.netSales)}</td>
+              <td>{percentFormatter.format(item.salesMix)}</td>
+              <td>{priceFormatter.format(item.contributionMargin)}</td>
+              <td>{currencyFormatter.format(item.grossProfit)}</td>
+              <td>{percentFormatter.format(item.grossMargin)}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4}>Selected-period total</td>
+            <td>{numberFormatter.format(analysis.totalUnits)}</td>
+            <td>{decimalFormatter.format(analysis.totalUph)}</td>
+            <td>—</td>
+            <td>{currencyFormatter.format(analysis.netSales)}</td>
+            <td>100.0%</td>
+            <td>—</td>
+            <td>{currencyFormatter.format(analysis.grossProfit)}</td>
+            <td>{percentFormatter.format(analysis.grossMargin)}</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 }
 
-function MetricCard({
+function Metric({
   icon: Icon,
   label,
   value,
@@ -228,28 +275,6 @@ function MetricCard({
       <Icon aria-hidden="true" size={17} />
       <span>{label}</span>
       <strong>{value}</strong>
-    </article>
-  );
-}
-
-function ReadinessItem({
-  description,
-  status,
-  title,
-}: {
-  description: string;
-  status: "ready" | "pending";
-  title: string;
-}) {
-  const Icon = status === "ready" ? CircleCheck : FlaskConical;
-
-  return (
-    <article className={`readiness-item readiness-item--${status}`}>
-      <Icon aria-hidden="true" size={18} />
-      <div>
-        <strong>{title}</strong>
-        <p>{description}</p>
-      </div>
     </article>
   );
 }

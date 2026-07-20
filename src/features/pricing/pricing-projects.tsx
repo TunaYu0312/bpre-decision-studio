@@ -37,7 +37,7 @@ export function PricingProjectsPage() {
       <div className="pricing-principle mt-7">
         <strong>Focused MVP</strong>
         <span>
-          Baseline → Price Sensitivity → Scenarios → Decision → Pilot Review
+          Intent → Menu Analysis → Price Response → Options → Decision & Pilot
         </span>
         <p>
           No automatic optimal price. Every recommendation exposes its evidence,
@@ -90,8 +90,8 @@ export function PricingProjectsPage() {
                   <span className="pricing-status pricing-status--ready">
                     {project.stage}
                   </span>
-                  <span className="pricing-status pricing-status--pending">
-                    Price Sensitivity Study pending
+                  <span className="pricing-status pricing-status--ready">
+                    Price response inputs available
                   </span>
                 </div>
                 <h3>{project.title}</h3>
@@ -116,11 +116,11 @@ export function PricingProjectsPage() {
                 </dl>
               </div>
               <Link
-                aria-label={`Open baseline for ${project.title}`}
+                aria-label={`Open pricing meeting for ${project.title}`}
                 className="button button--primary"
-                to={`/pricing/${project.id}/baseline`}
+                to={`/pricing/${project.id}/intent`}
               >
-                Open baseline
+                Open meeting preparation
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </article>

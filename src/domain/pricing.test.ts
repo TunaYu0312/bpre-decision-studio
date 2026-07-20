@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { calculateBaselineEconomics } from "./pricing";
+import {
+  calculateBaselineEconomics,
+  calculateScenarioForecast,
+} from "./pricing";
+import {
+  seedPricingProject,
+  seedPricingScenarios,
+} from "@/data/pricing-seed";
 
 describe("pricing baseline economics", () => {
   it("calculates UPH, mix, sales, gross profit, and gross margin", () => {
@@ -53,6 +60,53 @@ describe("pricing baseline economics", () => {
   it("rejects an undefined UPH denominator", () => {
     expect(() => calculateBaselineEconomics([], 0)).toThrow(
       "Eligible transactions must be greater than zero.",
+    );
+  });
+
+  it("normalizes ADTC, ADS, and ADQ to one store day", () => {
+    const result = calculateBaselineEconomics(
+      [
+        {
+          id: "item-a",
+          name: "Item A",
+          category: "Breakfast",
+          role: "Signature",
+          listPrice: 20,
+          netRealizedPrice: 20,
+          unitVariableCost: 6,
+          units: 1_000,
+          evidenceQuality: "Observed",
+          source: "POS",
+        },
+      ],
+      2_000,
+      { periodDays: 10, storeCount: 2 },
+    );
+
+    expect(result.adtc).toBe(100);
+    expect(result.averageCheck).toBe(10);
+    expect(result.ads).toBe(1_000);
+    expect(result.items[0].uph).toBe(50);
+    expect(result.items[0].adq).toBe(50);
+    expect(result.ads).toBeCloseTo(result.averageCheck * result.adtc, 6);
+  });
+
+  it("recalculates scenario Product Mix and EBITDA from explicit assumptions", () => {
+    const forecast = calculateScenarioForecast(
+      seedPricingProject,
+      seedPricingScenarios[0],
+    );
+
+    expect(forecast.items.reduce((sum, item) => sum + item.salesMix, 0)).toBeCloseTo(1, 6);
+    expect(forecast.adtc).toBeCloseTo(
+      (seedPricingProject.transactions * (1 + seedPricingScenarios[0].trafficChange)) /
+        seedPricingProject.periodDays /
+        seedPricingProject.storeCount,
+      6,
+    );
+    expect(forecast.items[0].adq).toBeCloseTo(
+      (forecast.items[0].forecastUph * forecast.adtc) / 100,
+      6,
     );
   });
 });

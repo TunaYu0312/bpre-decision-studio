@@ -1,5 +1,12 @@
 # BPR&E Menu Pricing Decision Studio — MVP PRD
 
+> **v2 implementation note:** The original four-slice sequence below has been
+> superseded for the active prototype by the five-step pricing-meeting workflow
+> in `docs/BPRE_Pricing_Meeting_and_Menu_Analysis_v2.md`: Decision Intent → Menu
+> Analysis → Price Response → Options → Decision & Action. The v2 metric
+> standard also adds AC, ADS, ADTC, ADQ, multi-store normalization, daypart
+> Product Mix, daypart Menu Engineering, and explicit EBITDA impact.
+
 **Document status:** Product reset / implementation baseline  
 **Version:** 1.0  
 **Product boundary:** Menu pricing and price-adjustment decisions for chain restaurant businesses  

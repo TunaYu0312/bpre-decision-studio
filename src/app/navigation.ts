@@ -10,7 +10,7 @@ export const navigationItems = [
     icon: ChartNoAxesCombined,
   },
   {
-    label: "Baseline & Research",
+    label: "Active Pricing Meeting",
     to: "/pricing/pricing-core-menu-2026",
     icon: FlaskConical,
   },

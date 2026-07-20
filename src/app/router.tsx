@@ -14,7 +14,10 @@ import { ConstraintListPage } from "@/features/constraints/constraint-list";
 import { PlannedPage } from "@/features/placeholders/planned-page";
 import { PriceSensitivityPage } from "@/features/pricing/price-sensitivity";
 import { PricingBaselinePage } from "@/features/pricing/pricing-baseline";
+import { PricingDecisionPage } from "@/features/pricing/pricing-decision";
+import { PricingIntentPage } from "@/features/pricing/pricing-intent";
 import { PricingProjectsPage } from "@/features/pricing/pricing-projects";
+import { ScenarioLabPage } from "@/features/pricing/scenario-lab";
 
 import { AppShell } from "./app-shell";
 
@@ -32,10 +35,14 @@ export function AppRoutes() {
           element={
             <Navigate
               replace
-              to="/pricing/pricing-core-menu-2026/baseline"
+              to="/pricing/pricing-core-menu-2026/intent"
             />
           }
           path="/pricing/pricing-core-menu-2026"
+        />
+        <Route
+          element={<PricingIntentPage />}
+          path="/pricing/:id/intent"
         />
         <Route
           element={<PricingBaselinePage />}
@@ -44,6 +51,14 @@ export function AppRoutes() {
         <Route
           element={<PriceSensitivityPage />}
           path="/pricing/:id/research"
+        />
+        <Route
+          element={<ScenarioLabPage />}
+          path="/pricing/:id/scenarios"
+        />
+        <Route
+          element={<PricingDecisionPage />}
+          path="/pricing/:id/decision"
         />
         <Route element={<Navigate replace to="/pricing" />} path="/home" />
         <Route element={<DecisionHomePage />} path="/legacy/home" />

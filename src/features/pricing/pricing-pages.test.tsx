@@ -19,11 +19,11 @@ describe("pricing MVP pages", () => {
     ).toBeVisible();
     expect(
       screen.getByRole("link", {
-        name: "Open baseline for 2026 Core Menu Price Review",
+        name: "Open pricing meeting for 2026 Core Menu Price Review",
       }),
     ).toHaveAttribute(
       "href",
-      "/pricing/pricing-core-menu-2026/baseline",
+      "/pricing/pricing-core-menu-2026/intent",
     );
   });
 
@@ -42,7 +42,7 @@ describe("pricing MVP pages", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "2026 Core Menu Price Review" }),
+      screen.getByRole("heading", { name: "Menu Analysis" }),
     ).toBeVisible();
     expect(screen.getByText("Total menu UPH")).toBeVisible();
     expect(
@@ -53,7 +53,7 @@ describe("pricing MVP pages", () => {
     ).toBeVisible();
     expect(screen.getAllByText("Signature Breakfast Set")[0]).toBeVisible();
     expect(
-      screen.getByRole("link", { name: "Continue to Price Sensitivity" }),
+      screen.getByRole("link", { name: "Continue to Price Response" }),
     ).toHaveAttribute(
       "href",
       "/pricing/pricing-core-menu-2026/research",
@@ -76,13 +76,13 @@ describe("pricing MVP pages", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "How will customers respond to price?",
+        name: "Where does customer response change?",
       }),
     ).toBeVisible();
-    expect(screen.getByText("Van Westendorp PSM")).toBeVisible();
-    expect(screen.getByText("Gabor–Granger")).toBeVisible();
+    expect(screen.getByText("Price Sensitivity Study")).toBeVisible();
+    expect(screen.getByText("Historical price periods")).toBeVisible();
     expect(
-      screen.getByText(/Survey response is not treated as actual elasticity/),
+      screen.getByText(/Stated purchase intent is not actual elasticity/),
     ).toBeVisible();
   });
 });

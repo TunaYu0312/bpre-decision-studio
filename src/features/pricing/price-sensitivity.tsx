@@ -1,159 +1,239 @@
 import {
   ArrowLeft,
-  BarChart3,
+  ArrowRight,
   ChartSpline,
   CircleAlert,
+  Database,
   FlaskConical,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 
-import { seedPricingProjects } from "@/data/pricing-seed";
+import {
+  seedPriceResponseCurves,
+  seedPriceResponseSignals,
+  seedPricingProjects,
+  seedPricingScenarios,
+} from "@/data/pricing-seed";
+import type { PriceResponseCurve } from "@/domain/pricing";
+
+import { priceFormatter } from "./pricing-format";
+import { PricingFlow } from "./pricing-flow";
 
 export function PriceSensitivityPage() {
   const { id } = useParams();
   const project = seedPricingProjects.find((record) => record.id === id);
+  const [itemId, setItemId] = useState("signature-breakfast-set");
 
-  if (!project) {
-    return <Navigate replace to="/pricing" />;
-  }
+  if (!project) return <Navigate replace to="/pricing" />;
+
+  const curve =
+    seedPriceResponseCurves.find((record) => record.itemId === itemId) ??
+    seedPriceResponseCurves[0];
+  const item = project.items.find((record) => record.id === curve.itemId)!;
+  const signal = seedPriceResponseSignals.find(
+    (record) => record.itemId === curve.itemId,
+  );
+  const candidatePrices = seedPricingScenarios.map((scenario) => ({
+    label: scenario.name.split(" · ")[0],
+    price:
+      scenario.items.find((record) => record.itemId === curve.itemId)
+        ?.proposedListPrice ?? item.listPrice,
+  }));
 
   return (
-    <section className="mx-auto max-w-7xl">
+    <section className="mx-auto max-w-[1500px]">
       <Link className="back-link" to={`/pricing/${project.id}/baseline`}>
         <ArrowLeft aria-hidden="true" size={15} />
-        Baseline &amp; Research
+        Menu Analysis
       </Link>
+      <PricingFlow active="research" projectId={project.id} />
 
-      <div className="page-header mt-5">
+      <div className="page-header mt-6">
         <div>
-          <p className="eyebrow">Price Sensitivity · Step 2 of 4</p>
-          <h1 className="page-title">How will customers respond to price?</h1>
+          <p className="eyebrow">Step 3 · Price response evidence</p>
+          <h1 className="page-title">Where does customer response change?</h1>
           <p className="page-description">
-            Use research to define acceptable price ranges and stated purchase
-            intent, then calibrate it with observed demand evidence. Survey
-            response is not treated as actual elasticity.
+            Compare stated price sensitivity with normalized historical
+            price–UPH evidence. The two curves answer different questions and
+            remain visibly separate.
           </p>
         </div>
+        <Link className="button button--primary" to={`/pricing/${project.id}/scenarios`}>
+          Compare Pricing Options
+          <ArrowRight aria-hidden="true" size={16} />
+        </Link>
       </div>
 
       <div className="research-warning mt-7">
         <CircleAlert aria-hidden="true" size={19} />
         <div>
-          <strong>Research has not started</strong>
+          <strong>Illustrative evidence, not a completed client study</strong>
           <p>
-            Rollout approval will remain blocked until price-response evidence or
-            an explicit pilot design is attached.
+            Curve values demonstrate the meeting workflow. A production
+            recommendation requires documented survey design or comparable
+            historical price periods with promotion, availability, and
+            seasonality controls.
           </p>
         </div>
       </div>
 
-      <div className="research-method-grid mt-5">
-        <MethodCard
-          icon={ChartSpline}
-          label="Recommended first"
-          title="Van Westendorp PSM"
-          purpose="Find the perceived acceptable range for signature and entry-price items."
-          outputs={[
-            "Marginal cheapness and expensiveness",
-            "Acceptable price range",
-            "Indifference and method-defined optimal points",
-          ]}
-        />
-        <MethodCard
-          icon={BarChart3}
-          label="Candidate prices"
-          title="Gabor–Granger"
-          purpose="Test purchase intent at the discrete prices the team may actually use."
-          outputs={[
-            "Stated demand curve",
-            "Revenue and gross-profit index",
-            "Sharp purchase-intent drop points",
-          ]}
-        />
-        <MethodCard
-          icon={FlaskConical}
-          label="Behavioral calibration"
-          title="Observed price test"
-          purpose="Estimate actual own-price response and substitution in a controlled store pilot."
-          outputs={[
-            "Observed elasticity range",
-            "UPH and traffic response",
-            "Cross-item substitution",
-          ]}
-        />
+      <div className="price-response-layout mt-5">
+        <section className="price-curve-panel">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Item price-response curve</p>
+              <h2>{item.name}</h2>
+            </div>
+            <select
+              aria-label="Select menu item"
+              onChange={(event) => setItemId(event.target.value)}
+              value={itemId}
+            >
+              {seedPriceResponseCurves.map((record) => {
+                const recordItem = project.items.find(
+                  (candidate) => candidate.id === record.itemId,
+                )!;
+                return (
+                  <option key={record.itemId} value={record.itemId}>
+                    {recordItem.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <PriceCurve curve={curve} />
+
+          <div className="curve-legend">
+            <span><i className="legend-line legend-line--amber" />Good Value for Money index</span>
+            <span><i className="legend-line legend-line--blue" />Observed UPH index</span>
+            <span><i className="legend-line legend-line--dashed" />Stated purchase intent</span>
+          </div>
+          <p className="disclaimer">
+            Indices are normalized for comparison. Stated purchase intent is
+            not actual elasticity, and historical response is not causal unless
+            confounding factors are controlled.
+          </p>
+        </section>
+
+        <aside className="price-signal-panel">
+          <p className="eyebrow">Decision signals</p>
+          <h2>{item.name}</h2>
+          <dl>
+            <div>
+              <dt>Current list price</dt>
+              <dd>{priceFormatter.format(item.listPrice)}</dd>
+            </div>
+            <div>
+              <dt>Stated acceptable range</dt>
+              <dd>
+                {signal
+                  ? `${priceFormatter.format(signal.acceptablePriceLow)}–${priceFormatter.format(signal.acceptablePriceHigh)}`
+                  : "Missing"}
+              </dd>
+            </div>
+            <div>
+              <dt>Good-value break point</dt>
+              <dd>{signal ? priceFormatter.format(signal.goodValueBreakPoint) : "Missing"}</dd>
+            </div>
+          </dl>
+          <div className="candidate-price-list">
+            <span>Candidate prices</span>
+            {candidatePrices.map((candidate) => (
+              <div key={candidate.label}>
+                <strong>{candidate.label}</strong>
+                <b>{priceFormatter.format(candidate.price)}</b>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
 
-      <section className="research-plan mt-5">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Recommended design</p>
-            <h2>Study plan for this project</h2>
-          </div>
-          <span>3 evidence layers</span>
-        </div>
-        <ol className="research-steps mt-5">
-          <li>
-            <span>1</span>
-            <div>
-              <strong>Protect value anchors</strong>
-              <p>
-                Run PSM for the Signature Breakfast Set and Americano to define
-                the acceptable price range and “too expensive” risk by segment.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>2</span>
-            <div>
-              <strong>Test real candidate prices</strong>
-              <p>
-                Use Gabor–Granger for the specific price points under
-                consideration; include the product description and bundle context.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>3</span>
-            <div>
-              <strong>Calibrate stated intent</strong>
-              <p>
-                Use a limited store test or historical price variation to estimate
-                actual UPH, traffic, and substitution response before rollout.
-              </p>
-            </div>
-          </li>
-        </ol>
-      </section>
+      <div className="evidence-layer-grid mt-5">
+        <EvidenceCard
+          icon={FlaskConical}
+          title="Price Sensitivity Study"
+          label="Research-stated"
+          text="PSM or Gabor–Granger defines perceived ranges, Good Value for Money breaks, and stated purchase intent."
+        />
+        <EvidenceCard
+          icon={Database}
+          title="Historical price periods"
+          label="Observed / modelled"
+          text="Comparable price periods estimate actual UPH and traffic response after controlling for promotions and availability."
+        />
+        <EvidenceCard
+          icon={ChartSpline}
+          title="Pilot calibration"
+          label="Required when uncertain"
+          text="A controlled store pilot validates ADTC, UPH, substitution, and customer value before broad rollout."
+        />
+      </div>
     </section>
   );
 }
 
-function MethodCard({
+function PriceCurve({ curve }: { curve: PriceResponseCurve }) {
+  const width = 720;
+  const height = 300;
+  const padding = 42;
+  const minPrice = Math.min(...curve.points.map((point) => point.price));
+  const maxPrice = Math.max(...curve.points.map((point) => point.price));
+  const x = (price: number) =>
+    padding + ((price - minPrice) / (maxPrice - minPrice)) * (width - padding * 2);
+  const y = (value: number) =>
+    height - padding - (value / 120) * (height - padding * 2);
+  const path = (field: "statedGoodValueIndex" | "observedUphIndex" | "statedPurchaseIntent") =>
+    curve.points
+      .map((point, index) => {
+        const value = point[field] ?? 0;
+        return `${index === 0 ? "M" : "L"} ${x(point.price)} ${y(value)}`;
+      })
+      .join(" ");
+
+  return (
+    <svg
+      aria-label="Price response curves"
+      className="price-curve"
+      role="img"
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      {[0, 30, 60, 90, 120].map((tick) => (
+        <g key={tick}>
+          <line className="curve-grid-line" x1={padding} x2={width - padding} y1={y(tick)} y2={y(tick)} />
+          <text className="curve-axis-label" x={8} y={y(tick) + 4}>{tick}</text>
+        </g>
+      ))}
+      {curve.points.map((point) => (
+        <text className="curve-axis-label" key={point.price} textAnchor="middle" x={x(point.price)} y={height - 12}>
+          ¥{point.price}
+        </text>
+      ))}
+      <path className="curve-path curve-path--amber" d={path("statedGoodValueIndex")} />
+      <path className="curve-path curve-path--blue" d={path("observedUphIndex")} />
+      <path className="curve-path curve-path--dashed" d={path("statedPurchaseIntent")} />
+    </svg>
+  );
+}
+
+function EvidenceCard({
   icon: Icon,
   label,
-  outputs,
-  purpose,
+  text,
   title,
 }: {
   icon: typeof ChartSpline;
   label: string;
-  outputs: string[];
-  purpose: string;
+  text: string;
   title: string;
 }) {
   return (
-    <article className="research-method-card">
-      <div className="research-method-icon">
-        <Icon aria-hidden="true" size={20} />
-      </div>
+    <article>
+      <Icon aria-hidden="true" size={19} />
       <span>{label}</span>
       <h2>{title}</h2>
-      <p>{purpose}</p>
-      <ul>
-        {outputs.map((output) => (
-          <li key={output}>{output}</li>
-        ))}
-      </ul>
+      <p>{text}</p>
     </article>
   );
 }

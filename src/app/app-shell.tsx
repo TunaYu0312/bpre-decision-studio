@@ -71,7 +71,7 @@ export function AppShell() {
               <Menu aria-hidden="true" size={20} />
             </button>
             <p className="hidden text-sm text-slate-400 sm:block">
-              Baseline → Price Sensitivity → Scenarios → Decision → Review
+              Intent → Menu Analysis → Price Response → Options → Decision
             </p>
             <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
               <CircleDot aria-hidden="true" size={14} />

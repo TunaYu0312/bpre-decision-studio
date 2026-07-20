@@ -35,16 +35,16 @@ describe("pricing workspace accessibility", () => {
     expect(screen.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     expect(screen.getByRole("link", { name: "Pricing Projects" })).toBeVisible();
     expect(
-      screen.getByRole("link", { name: "Baseline & Research" }),
+      screen.getByRole("link", { name: "Active Pricing Meeting" }),
     ).toHaveAttribute("href", "/pricing/pricing-core-menu-2026");
     expect(screen.queryByText("Rules & Governance")).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", {
-        name: "Open baseline for 2026 Core Menu Price Review",
+        name: "Open pricing meeting for 2026 Core Menu Price Review",
       }),
     ).toHaveAttribute(
       "href",
-      "/pricing/pricing-core-menu-2026/baseline",
+      "/pricing/pricing-core-menu-2026/intent",
     );
   });
 });

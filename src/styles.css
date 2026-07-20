@@ -2927,6 +2927,16 @@ progress::-moz-progress-bar { background: #fbbf24; }
   min-width: 1180px;
 }
 
+.pricing-baseline-layout,
+.pricing-baseline-main {
+  min-width: 0;
+}
+
+.pricing-baseline-main .table-shell {
+  width: 100%;
+  max-width: 100%;
+}
+
 .pricing-baseline-table tfoot td {
   border-top: 1px solid rgb(252 211 77 / 0.22);
   border-bottom: 0;

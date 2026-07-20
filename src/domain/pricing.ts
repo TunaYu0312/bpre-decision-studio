@@ -46,7 +46,7 @@ export interface PricingProject {
 
 export interface MenuItemEconomics extends MenuItemBaseline {
   uph: number;
-  productMix: number;
+  salesMix: number;
   netSales: number;
   grossProfit: number;
   grossMargin: number;
@@ -76,7 +76,7 @@ export function calculateBaselineEconomics(
     throw new Error("Baseline must contain at least one sold unit.");
   }
 
-  const calculatedItems = items.map((item) => {
+  const itemEconomics = items.map((item) => {
     const netSales = item.units * item.netRealizedPrice;
     const grossProfit =
       item.units * (item.netRealizedPrice - item.unitVariableCost);
@@ -84,21 +84,24 @@ export function calculateBaselineEconomics(
     return {
       ...item,
       uph: (item.units / transactions) * 100,
-      productMix: item.units / totalUnits,
       netSales,
       grossProfit,
       grossMargin: netSales === 0 ? 0 : grossProfit / netSales,
     };
   });
 
-  const netSales = calculatedItems.reduce(
+  const netSales = itemEconomics.reduce(
     (sum, item) => sum + item.netSales,
     0,
   );
-  const grossProfit = calculatedItems.reduce(
+  const grossProfit = itemEconomics.reduce(
     (sum, item) => sum + item.grossProfit,
     0,
   );
+  const calculatedItems = itemEconomics.map((item) => ({
+    ...item,
+    salesMix: netSales === 0 ? 0 : item.netSales / netSales,
+  }));
 
   return {
     transactions,
@@ -110,4 +113,3 @@ export function calculateBaselineEconomics(
     items: calculatedItems,
   };
 }
-

@@ -106,8 +106,8 @@ export function PricingBaselinePage() {
         />
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <section>
+      <div className="pricing-baseline-layout mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <section className="pricing-baseline-main">
           <div className="table-shell">
             <table className="operating-table pricing-baseline-table">
               <thead>
@@ -118,7 +118,8 @@ export function PricingBaselinePage() {
                   <th>Net price</th>
                   <th>Units</th>
                   <th>UPH</th>
-                  <th>Mix</th>
+                  <th>Sales</th>
+                  <th>Sales %</th>
                   <th>Gross profit</th>
                   <th>Gross margin</th>
                   <th>Evidence</th>
@@ -138,7 +139,8 @@ export function PricingBaselinePage() {
                     <td>{priceFormatter.format(item.netRealizedPrice)}</td>
                     <td>{numberFormatter.format(item.units)}</td>
                     <td>{decimalFormatter.format(item.uph)}</td>
-                    <td>{percentFormatter.format(item.productMix)}</td>
+                    <td>{currencyFormatter.format(item.netSales)}</td>
+                    <td>{percentFormatter.format(item.salesMix)}</td>
                     <td>{currencyFormatter.format(item.grossProfit)}</td>
                     <td>{percentFormatter.format(item.grossMargin)}</td>
                     <td>
@@ -155,6 +157,7 @@ export function PricingBaselinePage() {
                   <td colSpan={4}>Baseline total</td>
                   <td>{numberFormatter.format(baseline.totalUnits)}</td>
                   <td>{decimalFormatter.format(baseline.totalUph)}</td>
+                  <td>{currencyFormatter.format(baseline.netSales)}</td>
                   <td>100.0%</td>
                   <td>{currencyFormatter.format(baseline.grossProfit)}</td>
                   <td>{percentFormatter.format(baseline.grossMargin)}</td>
@@ -165,8 +168,9 @@ export function PricingBaselinePage() {
           </div>
           <p className="disclaimer mt-4">
             UPH = item units ÷ eligible transactions × 100. Net realized price
-            is used for economics; list price remains visible for the customer
-            decision. Demo values are illustrative.
+            is used for economics. Sales % = item net sales ÷ total net sales;
+            it is the Product Mix used for pricing analysis. Demo values are
+            illustrative.
           </p>
         </section>
 
@@ -249,4 +253,3 @@ function ReadinessItem({
     </article>
   );
 }
-

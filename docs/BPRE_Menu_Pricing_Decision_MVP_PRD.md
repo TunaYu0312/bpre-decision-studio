@@ -236,7 +236,7 @@ Choice-based conjoint can be considered later for bundle, attribute, and multi-i
 | Units | Number of item units sold |
 | Transactions | Eligible transactions in the same scope and period |
 | UPH | Units per hundred eligible transactions |
-| Product mix | Item units divided by total menu units in scope |
+| Product mix / Sales % | Item net sales divided by total net sales in scope |
 | Net sales | Units × net realized price |
 | Gross profit dollars | Units × (net realized price − unit variable cost) |
 | Gross margin | Gross profit dollars ÷ net sales |
@@ -312,11 +312,11 @@ This prevents a price increase from being counted twice as both an item-demand d
 ### 9.5 Product mix and economics
 
 ```text
-Forecast Mix_i
-  = Forecast Units_i / Σ Forecast Units
-
 Forecast Net Sales_i
   = Forecast Units_i × Forecast Net Realized Price_i
+
+Forecast Sales Mix_i
+  = Forecast Net Sales_i / Σ Forecast Net Sales
 
 Forecast Gross Profit Dollars_i
   = Forecast Units_i ×
@@ -403,7 +403,8 @@ Each scenario must specify price changes at item level. It cannot be a narrative
 - own elasticity and evidence quality;
 - forecast UPH;
 - forecast units;
-- forecast product mix;
+- forecast sales;
+- forecast Sales % / Product Mix;
 - cannibalization / substitution movement;
 - net sales;
 - gross profit dollars;
@@ -705,4 +706,3 @@ Limitations:
 - Historical elasticity may be biased by promotions, seasonality, availability, menu placement, and concurrent marketing.
 - Cross-item substitution requires enough item-level variation and should not be invented when evidence is weak.
 - The first MVP supports decision transparency and scenario comparison; it does not claim to calculate a universally optimal price.
-

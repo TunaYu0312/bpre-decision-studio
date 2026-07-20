@@ -41,10 +41,13 @@ describe("pricing baseline economics", () => {
     expect(result.grossMargin).toBeCloseTo(0.7027, 4);
     expect(result.items[0]).toMatchObject({
       uph: 30,
-      productMix: 0.6,
       netSales: 10_800,
       grossProfit: 7_200,
     });
+    expect(result.items[0].salesMix).toBeCloseTo(10_800 / 14_800, 6);
+    expect(
+      result.items.reduce((sum, item) => sum + item.salesMix, 0),
+    ).toBeCloseTo(1, 6);
   });
 
   it("rejects an undefined UPH denominator", () => {
@@ -53,4 +56,3 @@ describe("pricing baseline economics", () => {
     );
   });
 });
-

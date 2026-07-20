@@ -45,6 +45,12 @@ describe("pricing MVP pages", () => {
       screen.getByRole("heading", { name: "2026 Core Menu Price Review" }),
     ).toBeVisible();
     expect(screen.getByText("Total menu UPH")).toBeVisible();
+    expect(
+      screen.getByRole("columnheader", { name: "Sales" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("columnheader", { name: "Sales %" }),
+    ).toBeVisible();
     expect(screen.getAllByText("Signature Breakfast Set")[0]).toBeVisible();
     expect(
       screen.getByRole("link", { name: "Continue to Price Sensitivity" }),

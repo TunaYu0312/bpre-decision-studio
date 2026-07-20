@@ -1,7 +1,7 @@
 export const copy = {
-  productName: "BPR&E Decision Meeting Studio",
+  productName: "BPR&E Pricing Studio",
   productTagline:
-    "A structured decision workspace for high-value retail and restaurant decisions.",
+    "A focused workspace for menu pricing and price-adjustment decisions.",
   demoDisclaimer:
-    "Illustrative demo data only. The workspace structures decision meetings; it does not automate business decisions.",
+    "Illustrative demo data only. The workspace supports pricing decisions; it does not calculate a universally optimal price.",
 } as const;

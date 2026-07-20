@@ -1,16 +1,16 @@
-# BPR&E Decision Meeting Studio
+# BPR&E Menu Pricing Decision Studio
 
-A local-first, meeting-first decision workspace for high-value retail and
-restaurant business decisions.
+A focused decision workspace for menu pricing and price-adjustment decisions in
+chain restaurant businesses.
 
-It is not a generic BI dashboard, approval workflow, rule repository, or AI
-decision-maker. Its Phase 1 goal is to help a real chain retail / restaurant
-decision meeting move from Decision Project to Data Facts, Recommendation,
-Human Decision, Action Plan, and Review.
+The Phase 1 product has been reset from a generic decision system to one
+practical workflow: baseline menu economics, Price Sensitivity Study, elasticity
+and substitution assumptions, price scenarios, product-mix and gross-profit
+forecast, customer-value risk, human decision, and pilot review.
 
-The current demo uses one Promotion Decision scenario and makes the lightweight
-Company Decision Operating Profile visible so the BPR&E framework adapts to the
-company's strategic stage, risk posture, evidence standard, and meeting habits.
+The current application is the earlier general-decision prototype and will be
+progressively replaced by the pricing MVP. The implementation baseline is
+[docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md](docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md).
 
 ## Development
 

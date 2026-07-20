@@ -1,5 +1,7 @@
 # BPR&E Decision Meeting Studio — Phase 1 PRD
 
+> **Product reset notice (2026-07-19):** This general decision-meeting PRD is retained as architecture and discovery history. It is no longer the Phase 1 implementation baseline. Phase 1 is now the focused menu pricing and price-adjustment MVP defined in [docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md](docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md). Constitution, Constraint Library, generic Decision Card, and generic Meeting Mode are future support capabilities unless explicitly reused by the focused pricing workflow.
+
 **Document status:** Implementation-ready
 
 **Product:** BPR&E Decision Meeting Studio

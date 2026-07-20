@@ -3,7 +3,7 @@ import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
 
 import { copy } from "./copy";
-import { governanceItems, navigationItems } from "./navigation";
+import { navigationItems } from "./navigation";
 
 export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +24,7 @@ export function AppShell() {
             {copy.productName}
           </p>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            Retail decision meetings
+            Menu pricing decisions
           </p>
         </div>
 
@@ -39,6 +39,7 @@ export function AppShell() {
                 className={({ isActive }) =>
                   `nav-item ${isActive ? "nav-item--active" : ""}`
                 }
+                end={item.to === "/pricing"}
                 key={item.to}
                 onClick={() => setMenuOpen(false)}
                 to={item.to}
@@ -48,31 +49,12 @@ export function AppShell() {
               </NavLink>
             );
           })}
-          <div className="nav-group-label">Rules &amp; Governance</div>
-          {governanceItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-item nav-item--governance ${
-                    isActive ? "nav-item--active" : ""
-                  }`
-                }
-                key={`${item.label}-${item.to}`}
-                onClick={() => setMenuOpen(false)}
-                to={item.to}
-              >
-                <Icon aria-hidden="true" size={17} />
-                <span className="flex-1">{item.label}</span>
-              </NavLink>
-            );
-          })}
         </nav>
 
         <div className="border-t border-white/10 p-4 text-xs leading-5 text-slate-500">
           Local-first workspace
           <br />
-          No data leaves this browser
+          Illustrative menu data
         </div>
       </aside>
 
@@ -82,14 +64,14 @@ export function AppShell() {
             <button
               aria-expanded={menuOpen}
               aria-label="Toggle navigation"
-              className="icon-button lg:hidden"
+              className="icon-button mobile-nav-toggle"
               onClick={() => setMenuOpen((current) => !current)}
               type="button"
             >
               <Menu aria-hidden="true" size={20} />
             </button>
             <p className="hidden text-sm text-slate-400 sm:block">
-              Decision Project → Facts → Recommendation → Action & Review
+              Baseline → Price Sensitivity → Scenarios → Decision → Review
             </p>
             <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
               <CircleDot aria-hidden="true" size={14} />

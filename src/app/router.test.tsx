@@ -5,18 +5,18 @@ import { describe, expect, it } from "vitest";
 import { AppRoutes } from "./router";
 
 describe("application routes", () => {
-  it("renders the operational home as the default product route", () => {
+  it("renders focused pricing projects as the default product route", () => {
     render(
-      <MemoryRouter initialEntries={["/home"]}>
+      <MemoryRouter initialEntries={["/pricing"]}>
         <AppRoutes />
       </MemoryRouter>,
     );
 
     expect(
-      screen.getByRole("heading", { name: "Decisions requiring attention" }),
+      screen.getByRole("heading", { name: "Pricing Projects" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/A structured decision workspace for high-value retail and restaurant decisions/),
+      screen.getByText(/Decide which menu prices to change, by how much/),
     ).toBeInTheDocument();
   });
 });

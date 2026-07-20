@@ -12,6 +12,9 @@ import { ConstraintDetailPage } from "@/features/constraints/constraint-detail";
 import { ConstraintFormPage } from "@/features/constraints/constraint-form";
 import { ConstraintListPage } from "@/features/constraints/constraint-list";
 import { PlannedPage } from "@/features/placeholders/planned-page";
+import { PriceSensitivityPage } from "@/features/pricing/price-sensitivity";
+import { PricingBaselinePage } from "@/features/pricing/pricing-baseline";
+import { PricingProjectsPage } from "@/features/pricing/pricing-projects";
 
 import { AppShell } from "./app-shell";
 
@@ -23,9 +26,28 @@ export function AppRoutes() {
         path="/decisions/:id/meeting"
       />
       <Route element={<AppShell />}>
-        <Route element={<Navigate replace to="/home" />} index />
-        <Route element={<DecisionHomePage />} path="/home" />
-        <Route element={<Navigate replace to="/home" />} path="/demo" />
+        <Route element={<Navigate replace to="/pricing" />} index />
+        <Route element={<PricingProjectsPage />} path="/pricing" />
+        <Route
+          element={
+            <Navigate
+              replace
+              to="/pricing/pricing-core-menu-2026/baseline"
+            />
+          }
+          path="/pricing/pricing-core-menu-2026"
+        />
+        <Route
+          element={<PricingBaselinePage />}
+          path="/pricing/:id/baseline"
+        />
+        <Route
+          element={<PriceSensitivityPage />}
+          path="/pricing/:id/research"
+        />
+        <Route element={<Navigate replace to="/pricing" />} path="/home" />
+        <Route element={<DecisionHomePage />} path="/legacy/home" />
+        <Route element={<Navigate replace to="/pricing" />} path="/demo" />
         <Route element={<DecisionAgendaPage />} path="/decision-agenda" />
         <Route element={<ConstitutionListPage />} path="/constitutions" />
         <Route element={<ConstitutionFormPage />} path="/constitutions/new" />

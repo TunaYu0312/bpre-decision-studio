@@ -16,8 +16,8 @@ afterEach(async () => {
   await Promise.all(repositories.splice(0).map((repository) => repository.reset()));
 });
 
-describe("decision workspace accessibility", () => {
-  it("exposes decision-centric navigation and operational decision counts", async () => {
+describe("pricing workspace accessibility", () => {
+  it("exposes the focused pricing navigation and project entry point", async () => {
     const repository = new DexieWorkspaceRepository(
       `accessibility-${crypto.randomUUID()}`,
     );
@@ -26,26 +26,25 @@ describe("decision workspace accessibility", () => {
 
     render(
       <RepositoryProvider repository={repository}>
-        <MemoryRouter initialEntries={["/home"]}>
+        <MemoryRouter initialEntries={["/pricing"]}>
           <AppRoutes />
         </MemoryRouter>
       </RepositoryProvider>,
     );
 
     expect(screen.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Pricing Projects" })).toBeVisible();
     expect(
-      screen.queryByRole("navigation", { name: "Decision workflow" }),
-    ).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Home" })).toBeVisible();
-    expect(screen.getByRole("link", { name: "Decision Agenda" })).toBeVisible();
-    expect(screen.getByRole("link", { name: "Decision Workspace" })).toBeVisible();
-    expect(screen.getByText("Rules & Governance")).toBeVisible();
-    expect(await screen.findByText("1 decision requires attention")).toBeVisible();
+      screen.getByRole("link", { name: "Baseline & Research" }),
+    ).toHaveAttribute("href", "/pricing/pricing-core-menu-2026");
+    expect(screen.queryByText("Rules & Governance")).not.toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Open Breakfast Combo Pilot/i }),
+      screen.getByRole("link", {
+        name: "Open baseline for 2026 Core Menu Price Review",
+      }),
     ).toHaveAttribute(
       "href",
-      "/decisions/decision-breakfast-combo-pilot/meeting",
+      "/pricing/pricing-core-menu-2026/baseline",
     );
   });
 });

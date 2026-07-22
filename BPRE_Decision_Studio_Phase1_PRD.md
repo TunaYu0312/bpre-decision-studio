@@ -1,39 +1,74 @@
-# BPR&E Decision Studio — Phase 1 PRD
+# BPR&E Decision Meeting Studio — Phase 1 PRD
+
+> **Product reset notice (2026-07-19):** This general decision-meeting PRD is retained as architecture and discovery history. It is no longer the Phase 1 implementation baseline. Phase 1 is now the focused menu pricing and price-adjustment MVP defined in [docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md](docs/BPRE_Menu_Pricing_Decision_MVP_PRD.md). Constitution, Constraint Library, generic Decision Card, and generic Meeting Mode are future support capabilities unless explicitly reused by the focused pricing workflow.
 
 **Document status:** Implementation-ready
 
-**Product:** BPR&E Decision Studio
+**Product:** BPR&E Decision Meeting Studio
 
-**Phase:** Phase 1 — Common Decision System Foundation
+**Phase:** Phase 1 — Retail & Restaurant Decision Meeting MVP
 
 **Primary language of UI:** English-first, with copy centralized for future localization
 
 **Deployment target:** Public static web demo suitable for LinkedIn Featured
 
-**Product principle:** Human-led decision governance. The system structures evidence, rules, trade-offs, accountability, and review. It does not replace accountable management judgement or automatically execute business decisions.
+**Product principle:** BPR&E does not replace a company's management philosophy. It turns the company's chosen strategic priorities, risk posture, evidence standards, and meeting habits into a clearer, executable, and reviewable decision mechanism.
 
 ---
 
 ## 1. Product Summary
 
-BPR&E Decision Studio is a local-first decision governance application for high-value business decisions in chain retail and restaurant businesses.
+BPR&E Decision Meeting Studio is a local-first, meeting-first decision workspace for high-value business decisions in chain retail and restaurant businesses.
 
-Phase 1 builds the common foundation required by all later decision scenarios:
+It is not a generic Decision OS, BI dashboard, approval workflow, Constitution management tool, rule repository, or AI decision-maker. The product opportunity is narrower and more concrete: help chain retail and restaurant teams turn high-value operating meetings into structured, accountable, and reviewable decisions.
+
+Phase 1 builds the common meeting engine required by all later retail / restaurant decision scenarios:
 
 ```text
-Decision Constitution
-→ Constraint Library
-→ Decision Card
-→ Constraint Evaluation
-→ Pass / Revise / Escalate
-→ Action Plan
-→ Review
-→ Rule Update Request
+BPR&E Core
+  x Decision Operating Profile
+  x Decision-Type Template
+  -> Decision Meeting Workspace
 ```
 
-The application must demonstrate how an organization converts strategic priorities into measurable constraints, evaluates a real project against those constraints, assigns accountable owners and KPIs, and preserves a review trail.
+The primary user journey is:
 
-Phase 1 is not a dashboard project. It is a decision workflow product.
+```text
+Decision Agenda
+-> Decision Project
+-> Data Facts
+-> Options & Trade-offs
+-> Recommendation
+-> Rules / Constraints Check
+-> Human Decision
+-> Execution Plan
+-> Review & Learning
+```
+
+The application must demonstrate how an organization converts strategic priorities into measurable constraints, evaluates a real project against those constraints, presents the decision in a meeting-ready workspace, records accountable human judgement, assigns owners and KPIs, and preserves a review trail.
+
+Phase 1 is not a dashboard project or a governance document viewer. It is a structured decision meeting workspace.
+
+### 1.1 Phase 1 MVP boundary update
+
+The MVP should prove that one real chain operating decision meeting can run end-to-end:
+
+1. What decision needs to be made now?
+2. What is the current recommendation?
+3. What facts are known, estimated, assumed, or missing?
+4. What are the real options and trade-offs?
+5. Which constraints or red lines are triggered?
+6. What did accountable humans decide?
+7. Who owns execution and measurement?
+8. What KPI, review date, and exit rule define success or failure?
+
+Future scenario modules should reuse the same meeting engine:
+
+- Promotion Decision
+- Pricing Decision
+- Menu Portfolio Decision
+- New Product Pilot Decision
+- Store Network Portfolio Decision
 
 ---
 
@@ -57,7 +92,7 @@ Examples:
 - A local team proposes an investment without a common ROI or payback threshold.
 - A CEO is asked to decide without a structured view of red-line violations, trade-offs, or exit conditions.
 
-BPR&E Decision Studio makes those boundaries visible and operational.
+BPR&E Decision Meeting Studio makes those boundaries visible and operational.
 
 ---
 
@@ -82,15 +117,14 @@ Deliver a working, public-facing prototype that can create, manage, evaluate, ap
 
 A user should be able to complete the following end-to-end flow without developer support:
 
-1. Open an active Decision Constitution.
-2. View the linked active constraints.
-3. Create a Decision Card for a business project.
-4. Enter data, assumptions, BPR&E implications, and evidence.
-5. Run an evaluation.
-6. Receive Pass / Revise / Escalate with clear reasons.
-7. Confirm an approval outcome and create an Action Plan.
-8. Record KPI results at review dates.
-9. Create a request to confirm, revise, retire, or add a rule.
+1. Open the operational Home or Decision Agenda and identify decisions requiring judgement.
+2. Open a Decision Meeting Workspace containing the prepared Decision Card, evidence, options, and evaluation.
+3. Review the system recommendation and the reasons for Pass / Revise / Escalate.
+4. Inspect only the constraints and Constitution articles relevant to the current decision.
+5. Resolve open issues and record an accountable human decision with rationale.
+6. Confirm an Action Plan with owner, KPI, review date, and exit rule.
+7. Record KPI results at review dates.
+8. Create a request to confirm, revise, retire, or add a rule when review evidence warrants it.
 
 ---
 
@@ -141,6 +175,143 @@ Phase 1 must create the reusable foundation for those later modules.
 
 ---
 
+## 5.1 Decision-Centric UX Direction
+
+The primary product entry point is the decision agenda, not the Constitution or Constraint Library.
+
+1. **Home is operational.** It answers what requires judgement now, which decisions are escalated, why they are escalated, the recommended action, and expected North Star / Economic Box impact.
+2. **Decision Meeting Workspace is the core screen.** It presents the decision snapshot, customer and strategic context, evidence, options, recommendation, relevant rule checks, final decision, and action plan in one meeting-ready narrative.
+3. **Meeting input is intentionally narrow.** Prepared evidence, assumptions, options, evaluation results, and rule references are read-only during the meeting. Meeting participants record resolutions, final judgement, rationale, accountability, review dates, and exceptions.
+4. **Governance is progressively disclosed.** The full Constitution and Constraint Library remain available under Rules & Governance, but a decision workspace shows only the articles and constraints relevant to that decision.
+5. **The system recommendation does not approve the project.** Pass / Revise / Escalate is a structured system assessment. The final outcome is an explicit human decision and must be auditable.
+6. **Four meeting modes guide attention.** Fast Track, Revision Review, Executive Escalation, and Incomplete Decision determine the meeting emphasis without changing the underlying governance logic.
+
+The intended product hierarchy is:
+
+```text
+Decision Constitution
+→ Derived Constraints
+→ Decision Card
+→ Evaluation
+→ Human Decision
+→ Action Plan
+→ Review
+```
+
+---
+
+## 5.2 Decision Operating Profile & Configurable Governance Model
+
+The system should not force companies to adopt one decision style. It should make each company's decision logic explicit, structured, reviewable, and improvable.
+
+BPR&E Core defines what a sound high-value decision must consider:
+
+- Brand and customer meaning.
+- Product value, mix, quality, margin, and complexity.
+- Restaurant / Retail execution capacity, channel, labor, and service impact.
+- Economic Box impact, payback, cash discipline, and exit logic.
+
+The Company Decision Operating Profile defines how this company prefers to make decisions in its current strategic stage. In Phase 1 this is a lightweight, visible context layer inherited by every Decision Project. It is not a personalization engine and must not become a hidden "CEO personality" model.
+
+Minimum Phase 1 fields:
+
+- Current Strategic Stage
+- Primary North Star
+- Decision Style
+- Risk Posture
+- Evidence Standard
+- Economic Review Horizon
+- Hard Red Lines
+- Escalation Authority
+- Meeting Default
+- Review Cadence
+- Company Language
+- Version
+
+Every Decision Project also inherits a Decision-Type Template. Phase 1 implements the Promotion Decision Template as the seeded example. Later versions should add:
+
+- Pricing Decision
+- Menu Portfolio Decision
+- New Product Pilot Decision
+- Store Network Portfolio Decision
+
+The resulting operating logic is:
+
+```text
+BPR&E Core
+  x Company Decision Operating Profile
+  x Decision-Type Template
+  -> Decision Project
+  -> Decision Meeting Workspace
+```
+
+Example Phase 1 profile:
+
+```text
+Current Strategic Stage: Profit Repair Stage
+Primary North Star: Store-level EBITDA
+Decision Style: CEO final decision with CFO / COO challenge
+Risk Posture: Balanced but economically disciplined
+Evidence Standard: Base case + downside case required
+Economic Review Horizon: 30-day EBITDA review with 90-day payback signal
+Meeting Default: Exception-based meeting
+CEO Escalation: Brand red lines and negative EBITDA exceptions
+```
+
+This makes the same Breakfast Combo Pilot produce different recommendations under different strategic stages without claiming BPR&E is a universal fixed answer.
+
+---
+
+## 5.3 Separate Meeting Mode from Workspace Mode
+
+The product must not mix two different interfaces into one dense page.
+
+### Workspace Mode
+
+Workspace Mode is for:
+
+- Decision Owner
+- Data Owner
+- Execution Owner
+- Decision System Team
+
+It may contain detailed evidence, editable project fields, complete rule checks, BPR&E assessment, Constitution references, action-plan preparation, and review notes. It is the preparation and audit workbench.
+
+### Meeting Mode
+
+Meeting Mode is for CEO, leadership committee, and cross-functional decision meetings. It must be full-screen, presentation-first, and limited to a five-page sequence:
+
+```text
+Decision Brief
+-> Data Facts
+-> Options & Trade-offs
+-> Risks / Rules / Exceptions
+-> Final Decision & Commitments
+```
+
+Design rules:
+
+1. One key question per page.
+2. Maximum three major messages per page.
+3. Maximum six key metrics per page.
+4. No dense tables by default.
+5. No full BPR&E grid by default.
+6. No full Constraint Library or Constitution text by default.
+7. No persistent right-side decision rail.
+8. No editable forms during meeting presentation.
+9. Detailed evidence, rule logic, Constitution references, and audit data must sit behind progressive disclosure.
+10. Final decision actions appear only on the final commitments page.
+
+The default order is:
+
+```text
+Recommendation -> Facts -> Options -> Risks -> Commitments
+```
+
+This preserves the detailed workbench while giving executive meeting users a focused presentation flow.
+
+---
+
 ## 6. Target Users and Responsibilities
 
 | Role | Phase 1 responsibility | System interaction |
@@ -161,14 +332,17 @@ Phase 1 must create the reusable foundation for those later modules.
 
 ### Main navigation
 
-1. **Overview**
-2. **Decision Constitutions**
-3. **Constraint Library**
-4. **Decision Projects**
-5. **Evaluation Queue**
-6. **Action & Review**
-7. **Demo Cases**
-8. **Export / Settings**
+1. **Home**
+2. **Decision Agenda**
+3. **Decision Workspace**
+4. **Review & Follow-up**
+5. **Rules & Governance**
+   - Decision Constitutions
+   - Constraint Library
+   - Rule Derivation
+   - Version History
+
+Home and Decision Agenda are the default operational entry points. Rules & Governance is a supporting layer rather than the primary user journey.
 
 ### Key object relationships
 
@@ -278,6 +452,163 @@ For each pillar:
 
 Translate Constitution principles into measurable, inspectable, and reusable decision boundaries.
 
+## Constraint Derivation Mechanism
+
+### Purpose
+
+The Constraint Library must not operate as a disconnected list of thresholds.
+Every Constraint must be traceable to a specific Decision Constitution Article
+and explain how a strategic principle becomes an actionable decision boundary.
+
+### Governance chain
+
+```text
+Decision Constitution Article
+→ BPR&E Control Objective
+→ Constraint Blueprint
+→ Atomic Constraint
+→ Decision Card Evaluation
+→ Pass / Revise / Escalate
+→ Review and Rule Update
+```
+
+This chain is the required lineage model for creating, evaluating, reviewing,
+and updating constraints.
+
+### Step 1 — Structure Decision Constitution Articles
+
+Each Constitution principle that can govern a decision must be represented as a
+formal Article with:
+
+| Field | Description |
+|---|---|
+| Constitution ID | Stable identifier of the parent Constitution |
+| Article ID | Stable identifier of the governing Article |
+| Strategic Stage | Stage in which the Article applies |
+| Strategic Principle | Exact Constitution sentence used as the source |
+| Rule Type | Non-negotiable red line, strategic guardrail, approval mandate, information mandate, or monitoring principle |
+| Applicable Decision Types | Promotion, pricing, menu, new product, store network, generic, or custom |
+| Relevant BPR&E Pillars | Brand, Product, Restaurant/Retail, and/or Economic Box |
+| Escalation Authority | CEO, CFO, COO, or delegated functional leader |
+| Status and Version | Governed Article lifecycle and version |
+
+Example:
+
+| Field | Value |
+|---|---|
+| Article ID | `BR-01` |
+| Strategic Principle | “Signature products must not lose quality, value perception, or normal price credibility in exchange for short-term traffic.” |
+| Rule Type | Non-Negotiable Red Line |
+| Applicable Decision Types | Promotion, Pricing, Menu |
+| Relevant BPR&E Pillars | Brand, Product, Restaurant/Retail, Economic Box |
+| Escalation Authority | CEO |
+
+### Step 2 — Generate Constraint Blueprints
+
+For every applicable BPR&E pillar, the system must create a Constraint Blueprint
+that interprets the Article before an atomic threshold is created.
+
+| Field | Description |
+|---|---|
+| Constraint Blueprint ID | Stable identifier of the interpretation layer |
+| Parent Constitution ID | Constitution version from which the blueprint is derived |
+| Parent Article ID | Exact governing Article |
+| BPR&E Pillar | Pillar controlled by the blueprint |
+| Control Objective | What the blueprint protects or requires |
+| Risk to Avoid | Failure mode the blueprint is designed to prevent |
+| Metric or Data Field | Machine-readable signal used by atomic constraints |
+| Threshold Source | Evidence, policy, benchmark, management tolerance, or Article language supporting the threshold |
+| Rule Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Monitoring Trigger |
+| Evaluation Outcome | Pass, Revise, Escalate, Reject, or Incomplete Data |
+| Exception Authority | Role allowed to approve an exception |
+
+Example Brand blueprint:
+
+| Field | Value |
+|---|---|
+| Control Objective | Protect signature-product price perception |
+| Metric | Discount Rate |
+| Threshold | `<= 20%` |
+| Rule Type | Adjustable Guardrail |
+| Failed Outcome | Revise |
+| Exception Authority | CEO |
+
+### Step 3 — Generate Atomic Constraints
+
+Each executable constraint must be expressible as:
+
+```text
+IF [Scope]
+THEN [Metric] [Operator] [Threshold]
+ELSE [Evaluation Outcome]
+```
+
+Every Atomic Constraint requires:
+
+- Constraint ID
+- Parent Constitution ID
+- Parent Article ID
+- Constraint Blueprint ID
+- Derivation Rationale
+- BPR&E Pillar
+- Decision Type
+- Scope
+- Metric
+- Operator
+- Threshold
+- Unit
+- Severity
+- Evaluation Outcome
+- Exception Owner
+- Review Frequency
+- Effective Date
+- Version
+- Status
+
+The Derivation Rationale must explain why the selected metric and threshold are
+a valid operational interpretation of the exact Constitution sentence. IDs
+alone do not satisfy traceability.
+
+### Constraint types and evaluation behavior
+
+1. **Hard Red Line** — Failed evaluation produces `Escalate` or `Reject`.
+2. **Adjustable Guardrail** — Failed evaluation produces `Revise` and resubmission.
+3. **Approval Threshold** — Failed evaluation requires CEO or designated-authority approval.
+4. **Information Requirement** — Missing evidence produces `Incomplete Data`; the decision cannot be evaluated.
+5. **Monitoring Trigger** — The decision may pass with a mandatory review condition.
+
+### Step 4 — Apply Constraints to Decision Cards
+
+The Evaluation Engine must load constraints using:
+
+- Active Constitution Version
+- Applicable Article ID
+- Decision Type
+- BPR&E Pillar
+- Project Scope
+- Strategic Stage
+
+The engine may return:
+
+- `Pass`
+- `Revise`
+- `Escalate`
+- `Reject`
+- `Incomplete Data`
+
+Each evaluation must create an immutable snapshot containing:
+
+- Constitution Version
+- Article ID
+- Constraint Version
+- Project Inputs
+- Evaluation Results
+- Exception Requests
+- Timestamp
+
+Later changes to the Constitution, Blueprint, or Constraint must not alter a
+historical Decision Card evaluation.
+
 ## Constraint lifecycle
 
 - **Draft:** editable and not evaluated.
@@ -290,8 +621,8 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 1. **Hard Red Line** — Violation produces `Escalate` or `Stop` recommendation.
 2. **Adjustable Guardrail** — Violation produces `Revise` recommendation.
 3. **Approval Threshold** — Violation requires specified approver escalation.
-4. **Information Requirement** — Missing required information produces `Revise`.
-5. **Advisory Check** — Shown to reviewers but does not determine recommendation alone.
+4. **Information Requirement** — Missing required information produces `Incomplete Data`.
+5. **Monitoring Trigger** — A decision may pass with a mandatory review condition.
 
 ## Required constraint fields
 
@@ -300,10 +631,12 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 | Constraint ID | Unique ID, e.g. `BR-PR-001` |
 | Version | Version number |
 | Status | Draft / Active / Suspended / Retired |
-| Constitution Version ID | Parent Constitution rule/version |
-| Constitution Rule ID | Specific strategic principle linked to the constraint |
+| Constitution Version ID | Parent Constitution version |
+| Parent Constitution Article ID | Specific strategic principle linked to the constraint |
+| Constraint Blueprint ID | Governed interpretation from Article to metric |
+| Derivation Rationale | Why the metric and threshold validly operationalize the exact Article sentence |
 | BPR&E Pillar | Brand / Product / Restaurant-Retail / Economic Box |
-| Constraint Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Advisory |
+| Constraint Type | Hard Red Line / Adjustable Guardrail / Approval Threshold / Information Requirement / Monitoring Trigger |
 | Constraint Name | Human-readable label |
 | Description / Rationale | Why the constraint exists |
 | Scope | Business unit, market, decision type, product category, store format, etc. |
@@ -352,7 +685,12 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 
 - Table view with filter by BPR&E pillar, status, decision type, scope, severity, and outcome.
 - Search by Constraint ID, name, or metric key.
+- Search by Constitution Article ID or exact strategic-principle text.
 - Create / edit / clone / suspend / retire constraints.
+- Display the exact linked Constitution sentence in the table and detail view.
+- Display the complete Article → Blueprint → Atomic Constraint derivation chain.
+- Select governed Constitution Articles and Constraint Blueprints when creating or editing a constraint; do not rely on free-text IDs.
+- Show a clear traceability error if an Article or Blueprint cannot be resolved.
 - Display linked Constitution version and linked decision projects.
 - Show an impact warning before retiring or suspending a constraint with open projects.
 - Export filtered constraints to JSON and CSV.
@@ -360,6 +698,9 @@ Translate Constitution principles into measurable, inspectable, and reusable dec
 ## Acceptance criteria
 
 - A user can create at least one active constraint for each BPR&E pillar.
+- Every Active constraint resolves to one Constitution Article and one Constraint Blueprint.
+- The constraint detail view shows the exact source sentence, control objective, threshold source, derivation rationale, and atomic `IF / THEN / ELSE` rule.
+- A constraint cannot be treated as valid when its Constitution version, Article, pillar, Blueprint, or metric relationship is inconsistent.
 - An active constraint can be applied automatically to a matching Decision Card.
 - Retiring a constraint does not alter previous evaluation snapshots.
 - Constraint data supports numeric, boolean, enum, and required-information checks.

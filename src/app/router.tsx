@@ -15,6 +15,7 @@ import { PlannedPage } from "@/features/placeholders/planned-page";
 import { PriceSensitivityPage } from "@/features/pricing/price-sensitivity";
 import { PricingBaselinePage } from "@/features/pricing/pricing-baseline";
 import { PricingDecisionPage } from "@/features/pricing/pricing-decision";
+import { PricingDecisionRoomPage } from "@/features/pricing/pricing-decision-room";
 import { PricingIntentPage } from "@/features/pricing/pricing-intent";
 import { PricingProjectsPage } from "@/features/pricing/pricing-projects";
 import { ScenarioLabPage } from "@/features/pricing/scenario-lab";
@@ -24,6 +25,10 @@ import { AppShell } from "./app-shell";
 export function AppRoutes() {
   return (
     <Routes>
+      <Route
+        element={<PricingDecisionRoomPage />}
+        path="/pricing/:id/room/:stage?"
+      />
       <Route
         element={<DecisionMeetingModePage />}
         path="/decisions/:id/meeting"
@@ -35,7 +40,7 @@ export function AppRoutes() {
           element={
             <Navigate
               replace
-              to="/pricing/pricing-core-menu-2026/intent"
+              to="/pricing/pricing-core-menu-2026/room/current"
             />
           }
           path="/pricing/pricing-core-menu-2026"

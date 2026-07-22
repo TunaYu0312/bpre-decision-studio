@@ -11,7 +11,7 @@ export const navigationItems = [
   },
   {
     label: "Active Pricing Meeting",
-    to: "/pricing/pricing-core-menu-2026",
+    to: "/pricing/pricing-core-menu-2026/room/current",
     icon: FlaskConical,
   },
 ] as const;

@@ -36,7 +36,7 @@ describe("pricing workspace accessibility", () => {
     expect(screen.getByRole("link", { name: "Pricing Projects" })).toBeVisible();
     expect(
       screen.getByRole("link", { name: "Active Pricing Meeting" }),
-    ).toHaveAttribute("href", "/pricing/pricing-core-menu-2026");
+    ).toHaveAttribute("href", "/pricing/pricing-core-menu-2026/room/current");
     expect(screen.queryByText("Rules & Governance")).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", {
@@ -44,7 +44,7 @@ describe("pricing workspace accessibility", () => {
       }),
     ).toHaveAttribute(
       "href",
-      "/pricing/pricing-core-menu-2026/intent",
+      "/pricing/pricing-core-menu-2026/room/current",
     );
   });
 });

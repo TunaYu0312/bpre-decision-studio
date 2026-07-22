@@ -118,9 +118,9 @@ export function PricingProjectsPage() {
               <Link
                 aria-label={`Open pricing meeting for ${project.title}`}
                 className="button button--primary"
-                to={`/pricing/${project.id}/intent`}
+                to={`/pricing/${project.id}/room/current`}
               >
-                Open meeting preparation
+                Open Decision Room
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </article>

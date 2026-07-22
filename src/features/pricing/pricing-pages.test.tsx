@@ -23,7 +23,7 @@ describe("pricing MVP pages", () => {
       }),
     ).toHaveAttribute(
       "href",
-      "/pricing/pricing-core-menu-2026/intent",
+      "/pricing/pricing-core-menu-2026/room/current",
     );
   });
 

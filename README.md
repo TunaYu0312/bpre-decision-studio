@@ -19,8 +19,8 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173/home` or the executive meeting view at
-`http://localhost:5173/decisions/decision-breakfast-combo-pilot/meeting`.
+Open `http://localhost:5173/home` or the focused menu-pricing room at
+`http://localhost:5173/pricing/pricing-core-menu-2026/room/current`.
 
 The detailed owner workbench remains available at
 `http://localhost:5173/decisions/decision-breakfast-combo-pilot`.
@@ -44,6 +44,11 @@ No private API key is required. Phase 1 data remains in browser IndexedDB.
 
 - Public demo workspace and decision-meeting navigation
 - Full-screen five-page Meeting Mode for executive decision meetings
+- Five-page Menu Pricing Decision Room: Current Decision, Common Facts, Options
+  & Trade-off, Questions & Evidence Queue, and Decision/Execution/Review
+- District-customer-store decision matrix and operating contribution bridge
+- Human-confirmed evidence writeback, 30-store pilot plan, version freeze, and
+  meeting-note export
 - Separate Workspace Mode for owner / data / execution preparation
 - Company Decision Operating Profile attached to the Decision Project
 - Promotion Decision Template attached to the meeting workspace
@@ -52,4 +57,6 @@ No private API key is required. Phase 1 data remains in browser IndexedDB.
 - Idempotent anonymized seed data
 
 See [docs/architecture.md](docs/architecture.md) for domain and storage
-boundaries.
+boundaries. See
+[docs/Menu_Pricing_Decision_Room_MVP_Implementation.md](docs/Menu_Pricing_Decision_Room_MVP_Implementation.md)
+for the Chapter 8 and Chapter 21 acceptance mapping.
